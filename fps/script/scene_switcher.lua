@@ -2,15 +2,14 @@ local scene_switcher = function()
   local object = {
     texture = Texture(),
     color = Color(0, 0, 0, 0.0),
-    drawer = {},
+    drawer = Draw2D(),
     time = 0.25,
     timer = 0.0,
     flag = false,
     scene_name = "",
     is_launch = false,
     setup = function(self)
-      self.drawer = Draw2D()
-      self.drawer.material:AppendTexture(self.texture)
+      self.drawer.material:SetTexture(self.texture)
       self.drawer.scale = Window:Size()
     end,
     update = function(self)
@@ -26,10 +25,10 @@ local scene_switcher = function()
             if t < 0.0 then
               t = 1.0
             end
-            self.texture:fill_color(Color(self.color.r, self.color.g, self.color.b, t))
+            self.texture:FillColor(Color(self.color.r, self.color.g, self.color.b, t))
           else
             self.timer = 0
-            self.texture:fill_color(Color(self.color.r, self.color.g, self.color.b, 1.0))
+            self.texture:FillColor(Color(self.color.r, self.color.g, self.color.b, 1.0))
             self.flag = false
             Scene.Change(self.scene_name)
           end
@@ -40,17 +39,17 @@ local scene_switcher = function()
             if t < 0.0 then
               t = 0.0
             end
-            self.texture:fill_color(Color(self.color.r, self.color.g, self.color.b, t))
+            self.texture:FillColor(Color(self.color.r, self.color.g, self.color.b, t))
           else
             self.flag = false
-            self.texture:fill_color(Color(self.color.r, self.color.g, self.color.b, 0.0))
+            self.texture:FillColor(Color(self.color.r, self.color.g, self.color.b, 0.0))
             self.timer = 0.0
           end
         end
       end
     end,
     draw = function(self)
-      self.drawer:draw()
+      self.drawer:Draw()
     end,
     start = function(self, scene_name)
       self.is_launch = string.len(scene_name) == 0

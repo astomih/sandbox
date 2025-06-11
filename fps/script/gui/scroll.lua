@@ -26,8 +26,8 @@ local function scroll()
       self.max_drawer.scale = scale
       self.max_drawer.position = pos
       -- Mouse
-      local mpos = mouse.position_on_scene()
-      if not self.is_drag and mouse.is_pressed(mouse.LEFT) then
+      local mpos = Mouse.GetPositionOnScene()
+      if not self.is_drag and Mouse.IsPressed(Mouse.LEFT) then
         local dpos = self.drawer.position
         local dscale = self.drawer.scale
         if mpos.x >= dpos.x - dscale.x / 2
@@ -41,7 +41,7 @@ local function scroll()
           self.is_drag = true
         end
       end
-      if (mouse.is_released(mouse.LEFT)) then self.is_drag = false end
+      if (Mouse.IsReleased(Mouse.LEFT)) then self.is_drag = false end
       if self.is_drag then
         self.pos.y = mpos.y
         if self.pos.y < self.max_drawer.position.y - self.max_drawer.scale.y / 2 + self.drawer.scale.y / 2 then
@@ -63,9 +63,9 @@ local function scroll()
   }
   object.drawer = Draw2D(Texture())
   object.t1 = Texture()
-  object.t1:fill_color(Color(0, 0, 0, 0.5))
+  object.t1:FillColor(Color(0, 0, 0, 0.5))
   object.t2 = Texture()
-  object.t2:fill_color(Color(1, 1, 1, 0.5))
+  object.t2:FillColor(Color(1, 1, 1, 0.5))
 
   return object
 end

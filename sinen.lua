@@ -58,6 +58,8 @@ function Vec2(value) return {} end
 function Texture() return {} end
 
 ---@class Material
+---Set Texture. index is 1-based, optional.
+---@field SetTexture fun(self:Material, texture: Texture, index: integer?)
 ---@field AppendTexture fun(self: Material, texture: Texture)
 ---@field Clear fun(self: Material)
 ---@field GetTexture fun(self: Material, index: integer): Texture
@@ -137,8 +139,7 @@ function UniformData() return {} end
 function Shader() return {} end
 
 ---@class Font
----@field Load fun(self: Font, size: integer): nil
----@field LoadFromFile fun(self: Font, size: integer, path: string): nil
+---@field Load fun(self: Font, size: integer, path: string?): nil
 ---@field RenderText fun(self: Font, texture: Texture, text: string, color: Color): Texture
 ---@field Resize fun(self: Font, size: integer)
 ---@return Font
@@ -168,8 +169,9 @@ function Color() return {} end
 ---@field Add fun(self: Draw2D, drawable: any)
 ---@field At fun(self: Draw2D, x: number, y: number)
 ---@field Clear fun(self: Draw2D)
+---@param texture Texture?
 ---@return Draw2D
-function Draw2D() return {} end
+function Draw2D(texture) return {} end
 
 ---@class Draw3D
 ---@field scale Vec3
@@ -182,8 +184,9 @@ function Draw2D() return {} end
 ---@field Add fun(self: Draw3D, drawable: any)
 ---@field At fun(self: Draw3D, x: number, y: number, z: number)
 ---@field Clear fun(self: Draw3D)
+---@param texture Texture?
 ---@return Draw3D
-function Draw3D() return {} end
+function Draw3D(texture) return {} end
 
 ---@class Grid
 ---@field At fun(self: Grid, x: integer, y: integer): integer

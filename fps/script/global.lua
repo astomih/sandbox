@@ -15,4 +15,6 @@ MAP_CHIP = {
 }
 MAP_CHIP_WALKABLE = 0
 
-GUI_MANAGER = require("gui/gui_manager")()
+
+local guimanager = require("gui/gui_manager")
+GUI_MANAGER = guimanager()

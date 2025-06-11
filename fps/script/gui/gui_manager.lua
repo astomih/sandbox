@@ -1,7 +1,12 @@
+local gui_manager = {}
+
+
+
 local function gui_manager()
   local object = {
     drawers = {},
     current_drawer_pos = 1,
+    ---@type Texture[]
     textures = {},
     current_texture_pos = 1,
     max_object = 1000,
@@ -12,12 +17,14 @@ local function gui_manager()
         self:add(self.textures[i + new_size])
       end
     end,
+    ---@param drawer Draw2D
     add = function(self, drawer)
       self.drawers[self.current_drawer_pos].position = drawer.position
       self.drawers[self.current_drawer_pos].scale    = drawer.scale
-      self.drawers[self.current_drawer_pos].texture  = drawer.texture
+      self.drawers[self.current_drawer_pos].material = drawer.material
       self.current_drawer_pos                        = self.current_drawer_pos + 1
     end,
+    ---@return Texture
     get_texture = function(self)
       self.current_texture_pos = self.current_texture_pos + 1
       return self.textures[self.current_texture_pos - 1]
@@ -28,7 +35,7 @@ local function gui_manager()
     end,
     draw = function(self)
       for i = 1, self.current_drawer_pos - 1 do
-        self.drawers[i]:draw()
+        self.drawers[i]:Draw()
       end
     end
   }

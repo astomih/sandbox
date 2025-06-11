@@ -11,7 +11,7 @@ local function equipment_menu()
     setup = function(self)
       -- setup menu
       self.ui_panel_texture = Texture()
-      self.ui_panel_texture:fill_color(Color(1, 1, 1, 0.5))
+      self.ui_panel_texture:FillColor(Color(1, 1, 1, 0.5))
       self.ui_panel = Draw2D(self.ui_panel_texture)
       self.ui_panel.scale = Vec2(1120, 630)
       button.fg_color = Color(0, 0, 0, 0.9)
@@ -23,13 +23,13 @@ local function equipment_menu()
       end
     end,
     update = function(self)
-      if keyboard.is_pressed(keyboard.E) then
+      if Keyboard.IsPressed(Keyboard.E) then
         self.hide = not self.hide
       end
       if self.hide then
         return false
       end
-      mouse.hide_cursor(false)
+      Mouse.HideCursor(false)
       GUI_MANAGER:add(self.ui_panel)
       button.fg_color = Color(1, 1, 1, 0.9)
       button.bg_color = Color(1, 0, 0, 1.0)
@@ -58,7 +58,7 @@ local function equipment_menu()
         scroll:show(Vec2(200, 0), Vec2(20, 200))
         local offset = scroll.pos.y
         local tex = Texture()
-        tex:fill_color(Color(0, 0, 0, 0.5))
+        tex:FillColor(Color(0, 0, 0, 0.5))
         image:show(tex, Vec2(0, 0), Vec2(250, 500))
         if button:show("a", Vec2(0, 100 + offset), Vec2(200, 50)) then
           -- do
