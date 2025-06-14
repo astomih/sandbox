@@ -1,6 +1,6 @@
 local player = require "player"
 local enemy = require "enemy"
-local dungeon_generator = require("dungeon_generator/dungeon_generator")
+local dungeon_generator = require "dungeon_generator/dungeon_generator"
 local enemies = {}
 local enemy_max_num = 100
 local world = require "world"
@@ -17,13 +17,13 @@ local menu = {}
 local stair = {}
 -- assets
 local tile = Texture()
-tile:fill_color(Color(0.416, 0.204, 0.153, 1))
+tile:FillColor(Color(0.416, 0.204, 0.153, 1))
 
 local score_font = Font()
 local score_texture = Texture()
 local score_drawer = Draw2D(score_texture)
 local sprite_model = Model()
-sprite_model:load_sprite()
+sprite_model:LoadSprite()
 
 local menu = require("gui/menu")
 local menu_object = menu()
@@ -33,19 +33,19 @@ local equipment_menu = require("gui/equipment_menu")()
 
 local camera_controller = require("camera_controller")()
 
-score_font:load(DEFAULT_FONT_NAME, 64)
+score_font:Load(64, DEFAULT_FONT_NAME)
 menu_object:setup()
 DEFAULT_TEXTURE = Texture()
-DEFAULT_TEXTURE:fill_color(Color(1, 1, 1, 1))
-map:fill(0)
-map_z:fill(0)
+DEFAULT_TEXTURE:FillColor(Color(1, 1, 1, 1))
+map:Fill(0)
+map_z:Fill(0)
 dungeon_generator(map, 0, -1, 4, 3, 2)
 
 box = Draw3D(DEFAULT_TEXTURE)
 local sprite_model = Model()
-sprite_model:load_sprite()
+sprite_model:LoadSprite()
 sprite = Draw3D(tile)
-sprite.is_draw_depth = false
+sprite.isDrawDepth = false
 sprite.model = sprite_model
 stair = Draw3D(DEFAULT_TEXTURE)
 stair.model = sprite_model
@@ -70,40 +70,40 @@ for y = 1, map_size_y do
             map_draw3ds[y][x].position + map_draw3ds[y][x].scale
         map_draw3ds[y][x].aabb.min =
             map_draw3ds[y][x].position - map_draw3ds[y][x].scale
-        if map:at(x, y) ~= MAP_CHIP.STAIR then
-            sprite:add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation,
+        if map:At(x, y) ~= MAP_CHIP.STAIR then
+            sprite:Add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation,
                 map_draw3ds[y][x].scale)
         end
-        if map:at(x, y) == MAP_CHIP.WALL then
+        if map:At(x, y) == MAP_CHIP.WALL then
             map_draw3ds[y][x].position.z = 0.5
             map_draw3ds[y][x].aabb = AABB()
             map_draw3ds[y][x].aabb.max =
                 map_draw3ds[y][x].position + map_draw3ds[y][x].scale
             map_draw3ds[y][x].aabb.min =
                 map_draw3ds[y][x].position - map_draw3ds[y][x].scale
-            map_z:set(x, y, 0)
-            map_draw3ds[y][x].position.z = map_z:at(x, y) / 10.0
+            map_z:Set(x, y, 0)
+            map_draw3ds[y][x].position.z = map_z:At(x, y) / 10.0
             map_draw3ds[y][x].scale.z = 3
         end
-        if map:at(x, y) == MAP_CHIP.STAIR then
+        if map:At(x, y) == MAP_CHIP.STAIR then
             stair.position.x = x * TILE_SIZE
             stair.position.y = y * TILE_SIZE + 0.5
             stair.position.z = 0
         end
-        if map:at(x, y) == MAP_CHIP.KEY then
+        if map:At(x, y) == MAP_CHIP.KEY then
             stair.position.x = x * TILE_SIZE
             stair.position.y = y * TILE_SIZE + 0.5
             stair.position.z = 0
         end
-        if map:at(x, y) == MAP_CHIP.PLAYER then
+        if map:At(x, y) == MAP_CHIP.PLAYER then
             player.drawer.position.x = x * TILE_SIZE
             player.drawer.position.y = y * TILE_SIZE
         end
     end
 end
-score_font:render_text(score_texture, "SCORE: " .. SCORE,
+score_font:RenderText(score_texture, "SCORE: " .. SCORE,
     Color(1, 1, 1, 1))
-score_drawer.scale = score_texture:size()
+score_drawer.scale = score_texture:Size()
 camera_controller:setup(player)
 camera_controller:update()
 scene_switcher:setup()
@@ -111,35 +111,39 @@ scene_switcher:start("")
 
 equipment_menu:setup()
 
+
+---@param map_draw3ds world[][]
+local FrustumCullingMapDraw = function(map_draw3ds)
+    for y = 1, map_size_y do
+        for x = 1, map_size_x do
+            if Scene.GetCamera():IsAABBInFrustum(
+                    map_draw3ds[y][x].aabb) then
+                if map:At(x, y) == MAP_CHIP.WALL then
+                    box:Add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation,
+                        Vec3(2))
+                end
+                local p = map_draw3ds[y][x].position:Copy()
+                p.z = 0.0
+                sprite:Add(p, map_draw3ds[y][x].rotation,
+                    map_draw3ds[y][x].scale)
+            end
+        end
+    end
+end
 function Draw()
     player:draw3()
     for i, v in ipairs(enemies) do
         v:draw()
     end
-    box:clear()
-    sprite:clear()
-    for y = 1, map_size_y do
-        for x = 1, map_size_x do
-            if scene.camera():is_aabb_in_frustum(
-                    map_draw3ds[y][x].aabb) then
-                if map:at(x, y) == MAP_CHIP.WALL then
-                    box:add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation,
-                        Vec3(2, 2, 2))
-                end
-                local p = map_draw3ds[y][x].position:copy()
-                p.z = 0.0
-                sprite:add(p, map_draw3ds[y][x].rotation,
-                    map_draw3ds[y][x].scale)
-            end
-        end
-    end
-    culling = 0
-    box:draw()
-    sprite:draw()
-    stair:draw()
+    box:Clear()
+    sprite:Clear()
+    FrustumCullingMapDraw(map_draw3ds)
+    box:Draw()
+    sprite:Draw()
+    stair:Draw()
 
     player:draw2()
-    score_drawer:draw()
+    score_drawer:Draw()
     equipment_menu:draw()
     menu_object:draw()
     scene_switcher:draw()
@@ -164,29 +168,21 @@ function Update()
         return
     end
 
-    mouse.set_relative(true)
-    score_font:render_text(score_texture, "SCORE: " .. SCORE,
+    Mouse.SetRelative(true)
+    score_font:RenderText(score_texture, "SCORE: " .. SCORE,
         Color(1, 1, 1, 1))
-    score_drawer.scale = score_texture:size()
+    score_drawer.scale = score_texture:Size()
     collision_bullets(player.bullets)
-    for a, b in ipairs(player.orbits) do
-        collision_bullets(b.bullets)
-    end
     player:update(map, map_draw3ds, map_size_x, map_size_y)
     stair.position.z = 0.0
     for i, v in ipairs(enemies) do
         v:update(player)
         v:player_collision(player)
     end
-    stair.position.z = periodic.sin0_1(1.0, time.seconds())
+    stair.position.z = Periodic.Sin0_1(1.0, Time.Seconds())
     if math.floor(player.drawer.position.x + 0.5) == math.floor(stair.position.x) and
         math.floor(player.drawer.position.y + 0.5) == math.floor(stair.position.y) then
-        NOW_STAGE = NOW_STAGE + 1
-        if NOW_STAGE == 4 then
-            scene_switcher:start("scene02_clear")
-        else
-            scene_switcher:start("scene02_clear")
-        end
+        scene_switcher:start("scene02_clear")
     end
     if player.hp <= 0 then
         scene_switcher:start("scene03_gameover")
@@ -194,15 +190,16 @@ function Update()
     camera_controller:update()
 end
 
+---@param _bullets bullet[]
 collision_bullets = function(_bullets)
     for i, v in ipairs(_bullets) do
         for j, w in ipairs(enemies) do
-            if collision.aabb_aabb(v.aabb, w.aabb) then
+            if Collision.AABBvsAABB(v.aabb, w.aabb) then
                 local efk = effect()
                 efk:setup()
-                efk.texture:fill_color(Color(1, 0.2, 0.2, 1))
+                efk.texture:FillColor(Color(1, 0.2, 0.2, 1))
                 for k = 1, efk.max_particles do
-                    efk.worlds[k].position = w.drawer.position:copy()
+                    efk.worlds[k].position = w.drawer.position:Copy()
                 end
                 efk:play()
                 table.insert(player.efks, efk)
@@ -218,7 +215,7 @@ collision_bullets = function(_bullets)
                 end
             end
         end
-        if map:at(math.floor(v.drawer
+        if map:At(math.floor(v.drawer
                 .position
                 .x / TILE_SIZE +
                 0.5), math.floor(v.drawer.position.y / TILE_SIZE + 0.5)) < MAP_CHIP_WALKABLE then

@@ -4,18 +4,19 @@ local is_collision = require "is_collision"
 local input_vector = {}
 local speed = 2.0
 local effect = require "effect"
-local orbit = require "orbit"
 local r1 = 0
 local r2 = 0
+
+---@param map Grid
 local function decide_pos(map, map_size_x, map_size_y)
     r1 = math.random(1, map_size_x)
     r2 = math.random(1, map_size_y)
-    return map:at(r1, r2) == 1
+    return map:At(r1, r2) == 1
 end
 
 local beforeMousePos = Vec2(0, 0)
 
-local player = {
+local Player = {
     drawer = {},
     model = {},
     bullets = {},
@@ -45,8 +46,6 @@ local player = {
     boost_mag = 5,
     boost_sound = {},
     is_boost = false,
-    orbits = {},
-    orbit_toggle = true,
     speed_min = 6.0,
     speed_max = 16.0,
     blur_time = 0.0,
@@ -54,11 +53,14 @@ local player = {
         self.boost_timer = 0.0
         self.boost = 0.0
         self.is_boost = false
-        renderer.at_render_texture_user_data(0, 0.0)
     end,
+    ---@param self Player
+    ---@param map Grid
+    ---@param map_size_x number
+    ---@param map_size_y number
     setup = function(self, map, map_size_x, map_size_y)
         self.model = Model()
-        self.model:load("triangle.glb")
+        self.model:Load("triangle.glb")
         self.drawer = Draw3D(DEFAULT_TEXTURE)
         self.drawer.model = self.model
         self.aabb = AABB()
@@ -66,14 +68,14 @@ local player = {
         self.bullet_timer = 0.0
         self.hp = 100
         self.hp_font = Font()
-        self.hp_font:load(DEFAULT_FONT_NAME, 64)
+        self.hp_font:Load(64, DEFAULT_FONT_NAME)
         self.hp_font_texture = Texture()
         self.hp_drawer = Draw2D(self.hp_font_texture)
         self.stamina = self.stamina_max
         self.stamina_texture = Texture()
-        self.stamina_texture:fill_color(Color(1.0, 1.0, 1.0, 0.9))
+        self.stamina_texture:FillColor(Color(1.0, 1.0, 1.0, 0.9))
         self.stamina_max_texture = Texture()
-        self.stamina_max_texture:fill_color(Color(0.0, 0.0, 0.0, 0.2))
+        self.stamina_max_texture:FillColor(Color(0.0, 0.0, 0.0, 0.2))
         self.stamina_drawer = Draw2D(self.stamina_texture)
         self.stamina_drawer.position = Vec2(0, 350)
         self.stamina_drawer.scale = UI_SCALE_Vec2(300, 10)
@@ -81,7 +83,7 @@ local player = {
         self.stamina_max_drawer.position = Vec2(0, 350)
         self.stamina_max_drawer.scale = UI_SCALE_Vec2(300, 10)
 
-        self.render_text(self)
+        self:render_text()
         r1 = 0
         r2 = 0
         while decide_pos(map, map_size_x, map_size_y) == true do
@@ -91,50 +93,44 @@ local player = {
         self.hp_drawer.position.x = 0
         self.hp_drawer.position.y = 300
         self.boost_sound = Sound()
-        self.boost_sound:load("boost.wav")
-        self.boost_sound:set_volume(0.2)
+        self.boost_sound:Load("boost.wav")
+        self.boost_sound:SetVolume(0.2)
     end,
     horizontal = math.pi,
     vertical = 0.0,
+    ---@param self Player
+    ---@param map Grid
+    ---@param map_draw3ds world[][]
+    ---@param map_size_x number
+    ---@param map_size_y number
     update = function(self, map, map_draw3ds, map_size_x, map_size_y)
-        local p = self.drawer.position:copy()
-        self.aabb:update_world(self.drawer.position, self.drawer.scale, self.model:aabb())
+        local p = self.drawer.position:Copy()
+        self.aabb:UpdateWorld(self.drawer.position, self.drawer.scale, self.model:GetAABB())
         input_vector = calc_input_vector()
         local is_move = input_vector.x ~= 0 or input_vector.y ~= 0
 
-        if keyboard.is_down(keyboard.LSHIFT) and is_move then
+        if Keyboard.IsDown(Keyboard.LSHIFT) and is_move then
             speed = self.speed_max
-            self.stamina = self.stamina - self.stamina_run_cost * scene.delta_time()
+            self.stamina = self.stamina - self.stamina_run_cost * Scene.DeltaTime()
             if self.stamina <= 0.0 then
                 self.stamina = 0.0
                 speed = self.speed_min
             end
         else
             speed = self.speed_min
-            self.stamina = self.stamina + scene.delta_time() * self.stamina_recover_speed
+            self.stamina = self.stamina + Scene.DeltaTime() * self.stamina_recover_speed
             if self.stamina > self.stamina_max then
                 self.stamina = self.stamina_max
             end
         end
         -- bullet
-        if keyboard.is_pressed(keyboard.Q) then
-            if self.orbit_toggle then
-                self.orbit_toggle = false
-                local o = orbit(self)
-                o:setup()
-                table.insert(self.orbits, o)
-            else
-                self.orbit_toggle = true
-                self.orbits = {}
-            end
-        end
-        if mouse.is_pressed(mouse.LEFT) then
+        if Mouse.IsPressed(Mouse.LEFT) then
             self.bullet_flag = true
         end
-        self.bullet_timer = self.bullet_timer + scene.delta_time()
+        self.bullet_timer = self.bullet_timer + Scene.DeltaTime()
         if self.bullet_flag then
             if self.bullet_timer >
-                self.bullet_time and (mouse.is_down(mouse.LEFT)) then
+                self.bullet_time and (Mouse.IsDown(Mouse.LEFT)) then
                 local b = bullet(map_draw3ds)
 
                 local forward = Vec3(math.sin(math.rad(self.drawer.rotation.z)),
@@ -143,7 +139,7 @@ local player = {
                     math.cos(math.rad(self.drawer.rotation.z + 90)), -0.5)
 
                 local rot = forward * Vec3(1000, 1000, 1000) - cross
-                rot = rot:normalize()
+                rot = rot:Normalize()
                 b:setup(self.drawer, rot)
 
                 b.drawer.position = b.drawer.position + cross * Vec3(0.25, 0.25, 1)
@@ -151,7 +147,7 @@ local player = {
                 table.insert(self.bullets, b)
                 self.bullet_timer = 0.0
             end
-            if mouse.is_released(mouse.LEFT) then
+            if Mouse.IsReleased(Mouse.LEFT) then
                 self.bullet_flag = false
             end
         end
@@ -159,14 +155,12 @@ local player = {
             if self.boost_timer >= self.boost_time then
                 self:boost_reset()
             else
-                local t = periodic.sin0_1(self.boost_time * 2.0, self.boost_timer) - 0.5
+                local t = Periodic.Sin0_1(self.boost_time * 2.0, self.boost_timer) - 0.5
                 t = t * 0.2
-
-                renderer.at_render_texture_user_data(0, t)
-                self.boost_timer = self.boost_timer + scene.delta_time()
+                self.boost_timer = self.boost_timer + Scene.DeltaTime()
             end
         else
-            if keyboard.is_pressed(keyboard.SPACE) and is_move then
+            if Keyboard.IsPressed(Keyboard.SPACE) and is_move then
                 if self.stamina >= self.stamina_boost_cost then
                     self.stamina = self.stamina - self.stamina_boost_cost
                     if self.stamina <= 0.0 then
@@ -174,10 +168,10 @@ local player = {
                     end
                     local efk = effect()
                     efk:setup()
-                    efk.texture:fill_color(Color(0.6, 0.6, 1.0, 1.0))
+                    efk.texture:FillColor(Color(0.6, 0.6, 1.0, 1.0))
                     efk.impl = function(e)
                         for i = 1, e.max_particles do
-                            local t = scene.delta_time() * 2
+                            local t = Scene.DeltaTime() * 2
                             e.worlds[i].position.x =
                                 e.worlds[i].position.x + math.cos(i) * t
                             e.worlds[i].position.y =
@@ -187,11 +181,11 @@ local player = {
                         end
                     end
                     for j = 1, efk.max_particles do
-                        efk.worlds[j].position = self.drawer.position:copy()
+                        efk.worlds[j].position = self.drawer.position:Copy()
                     end
                     efk:play()
                     table.insert(self.efks, efk)
-                    self.boost_sound:play()
+                    self.boost_sound:Play()
                     self.boost = self.boost_mag
                     self.is_boost = true
                     self.boost_timer = 0.0
@@ -203,9 +197,9 @@ local player = {
             if v.current_time > v.life_time then
                 local efk = effect()
                 efk:setup()
-                efk.texture:fill_color(Color(1.0, 1.0, 1.0, 1.0))
+                efk.texture:FillColor(Color(1.0, 1.0, 1.0, 1.0))
                 for j = 1, efk.max_particles do
-                    efk.worlds[j].position = v.drawer.position:copy()
+                    efk.worlds[j].position = v.drawer.position:Copy()
                 end
                 efk:play()
                 table.insert(self.efks, efk)
@@ -228,15 +222,15 @@ local player = {
             final_speed = final_speed / math.sqrt(2)
         end
 
-        before_pos = self.drawer.position:copy()
+        before_pos = self.drawer.position:Copy()
         local flag = false
         if input_vector.y ~= 0 then
             flag = true
             self.drawer.position = self.drawer.position + Vec3(
-                math.sin(math.rad(self.drawer.rotation.z)) * final_speed * scene.delta_time() * input_vector.y,
+                math.sin(math.rad(self.drawer.rotation.z)) * final_speed * Scene.DeltaTime() * input_vector.y,
                 math.cos(math.rad(self.drawer.rotation.z)) *
                 final_speed *
-                scene.delta_time() * input_vector.y,
+                Scene.DeltaTime() * input_vector.y,
                 0)
         end
         if input_vector.x ~= 0 then
@@ -244,40 +238,38 @@ local player = {
             self.drawer.position = self.drawer.position + Vec3(
                 math.sin(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) *
                 final_speed *
-                scene.delta_time(),
+                Scene.DeltaTime(),
                 math.cos(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) *
                 final_speed *
-                scene.delta_time(),
+                Scene.DeltaTime(),
                 0)
         end
 
         if flag then
             -- xとy成分でそれぞれあたり判定を行う
             local dxy = Vec2(self.drawer.position.x, self.drawer.position.y) - Vec2(before_pos.x, before_pos.y)
-            self.aabb:update_world(self.drawer.position - Vec3(0, dxy.y, 0), self.drawer.scale, self.model:aabb())
+            self.aabb:UpdateWorld(self.drawer.position - Vec3(0, dxy.y, 0), self.drawer.scale, self.model:GetAABB())
             if is_collision(self.drawer.position - Vec3(0, dxy.y, 0), self.aabb, map, map_draw3ds, map_size_x, map_size_y) then
                 self.drawer.position.x = before_pos.x
             end
-            self.aabb:update_world(self.drawer.position - Vec3(dxy.x, 0, 0), self.drawer.scale, self.model:aabb())
+            self.aabb:UpdateWorld(self.drawer.position - Vec3(dxy.x, 0, 0), self.drawer.scale, self.model:GetAABB())
             if is_collision(self.drawer.position - Vec3(dxy.x, 0, 0), self.aabb, map, map_draw3ds, map_size_x, map_size_y) then
                 self.drawer.position.y = before_pos.y
             end
         end
-        local pos = mouse.position_on_scene()
-        self.drawer.rotation.y = self.drawer.rotation.y + math.sin(pos.y / scene.half().y) * 32.0
-        self.drawer.rotation.z = self.drawer.rotation.z + math.sin(pos.x / scene.half().x) * 32.0
-        mouse.set_position_on_scene(Vec2(0.0, 0.0))
-        for i, j in ipairs(self.orbits) do
-            j:update(map_draw3ds)
-        end
+        local pos = Mouse.GetPositionOnScene()
+        self.drawer.rotation.y = self.drawer.rotation.y + math.sin(pos.y / Scene.Half().y) * 32.0
+        self.drawer.rotation.z = self.drawer.rotation.z + math.sin(pos.x / Scene.Half().x) * 32.0
+        Mouse.SetPositionOnScene(Vec2(0.0, 0.0))
         local s_ratio = self.stamina / self.stamina_max
         self.stamina_drawer.scale.x = s_ratio * 300
         if s_ratio <= 0.2 then
-            self.stamina_texture:fill_color(Color(1.0, 0.0, 0.0, 0.9))
+            self.stamina_texture:FillColor(Color(1.0, 0.0, 0.0, 0.9))
         else
-            self.stamina_texture:fill_color(Color(1.0, 1.0, 1.0, 0.9))
+            self.stamina_texture:FillColor(Color(1.0, 1.0, 1.0, 0.9))
         end
     end,
+    ---@param self Player
     draw3 = function(self)
         --self.drawer:draw()
         for i, v in ipairs(self.efks) do
@@ -286,23 +278,22 @@ local player = {
         for i, v in ipairs(self.bullets) do
             v:draw()
         end
-        for i, j in ipairs(self.orbits) do
-            j:draw()
-        end
     end,
+    ---@param self Player
     draw2 = function(self)
-        self.hp_drawer:draw()
-        self.stamina_max_drawer:draw()
-        self.stamina_drawer:draw()
+        self.hp_drawer:Draw()
+        self.stamina_max_drawer:Draw()
+        self.stamina_drawer:Draw()
     end,
+    ---@param self Player
     render_text = function(self)
         if self.hp / self.hp_max <= 0.2 then
-            self.hp_font:render_text(self.hp_font_texture, "HP: " .. self.hp, Color(1, 0.0, 0.0, 0.8))
+            self.hp_font:RenderText(self.hp_font_texture, "HP: " .. self.hp, Color(1, 0.0, 0.0, 0.8))
         else
-            self.hp_font:render_text(self.hp_font_texture, "HP: " .. self.hp, Color(1, 1, 1, 0.9))
+            self.hp_font:RenderText(self.hp_font_texture, "HP: " .. self.hp, Color(1, 1, 1, 0.9))
         end
-        self.hp_drawer.scale = self.hp_font_texture:size()
+        self.hp_drawer.scale = self.hp_font_texture:Size()
     end
 }
 
-return player
+return Player

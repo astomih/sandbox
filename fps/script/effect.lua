@@ -1,6 +1,31 @@
 local world = require "world"
 local tree = Model()
 
+---@class effect
+---@field duration number
+---@field looping boolean
+---@field prewarm boolean
+---@field start_lifetime number
+---@field start_speed number
+---@field start_size number
+---@field start_rotation number
+---@field start_color Color
+---@field gravity_multiplier number
+---@field inherit_velocity number
+---@field play_on_awake boolean
+---@field max_particles number
+---@field drawer Draw3D
+---@field texture Texture
+---@field worlds world[]
+---@field is_playing boolean
+---@field is_stop boolean
+---@field timer number
+---@field setup fun(self: effect)
+---@field impl fun(self: effect)
+---@field update fun(self: effect)
+---@field draw fun(self: effect)
+---@field play fun(self: effect)
+---@return effect
 local function effect()
     local object = {
         duration = 1.0,
@@ -21,9 +46,10 @@ local function effect()
         is_playing = false,
         is_stop = false,
         timer = 0.0,
+        ---@param self effect
         setup = function(self)
             self.texture = Texture()
-            self.texture:fill_color(self.start_color)
+            self.texture:FillColor(self.start_color)
             self.drawer = Draw3D(self.texture)
             for i = 1, self.max_particles do
                 self.worlds[i] = world()
@@ -33,20 +59,23 @@ local function effect()
             end
             if self.play_on_awake then self.is_playing = true end
         end,
-        impl = function(e)
-            for i = 1, e.max_particles do
-                e.worlds[i].position.x =
-                    e.worlds[i].position.x + math.cos(i) * scene.delta_time()
-                e.worlds[i].position.y =
-                    e.worlds[i].position.y + math.sin(i) * scene.delta_time()
-                e.worlds[i].position.z =
-                    e.worlds[i].position.z + scene.delta_time()
+        ---@param self effect
+        impl = function(self)
+            local dT = Scene.DeltaTime()
+            for i = 1, self.max_particles do
+                self.worlds[i].position.x =
+                    self.worlds[i].position.x + math.cos(i) * dT
+                self.worlds[i].position.y =
+                    self.worlds[i].position.y + math.sin(i) * dT
+                self.worlds[i].position.z =
+                    self.worlds[i].position.z + dT
             end
         end,
+        ---@param self effect
         update = function(self)
             --  if not self.is_playing then return end
-            self.drawer:clear()
-            self.timer = self.timer + scene.delta_time()
+            self.drawer:Clear()
+            self.timer = self.timer + Scene.DeltaTime()
             if self.timer > self.start_lifetime then
                 self.timer = 0.0
                 for i = 1, self.max_particles do
@@ -59,20 +88,22 @@ local function effect()
                     self.is_stop = true
                 end
             end
-            self.impl(self)
+            self:impl()
             if self.is_playing then
                 for i = 1, self.max_particles do
-                    self.drawer:add(self.worlds[i].position,
+                    self.drawer:Add(self.worlds[i].position,
                         self.worlds[i].rotation,
                         self.worlds[i].scale)
                 end
             end
         end,
+        ---@param self effect
         draw = function(self)
             if self.is_playing then
-                self.drawer:draw()
+                self.drawer:Draw()
             end
         end,
+        ---@param self effect
         play = function(self)
             self.is_playing = true
             self.is_stop = false

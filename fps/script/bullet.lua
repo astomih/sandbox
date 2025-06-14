@@ -1,8 +1,20 @@
 local m = Model()
 local sound = Sound()
-sound:load("shot.wav")
-sound:set_volume(0.3)
+sound:Load("shot.wav")
+sound:SetVolume(0.3)
 
+---@class bullet
+---@field speed number
+---@field drawer Draw3D
+---@field forward Vec3
+---@field life_time number
+---@field current_time number
+---@field aabb AABB
+---@field texture Texture
+---@field setup fun(self: bullet, owner: Draw3D, forward: Vec3)
+---@field update fun(self: bullet)
+---@field draw fun(self: bullet)
+---@return bullet
 local function bullet(map_draw3ds)
     local object = {
         speed = 40,
@@ -12,29 +24,35 @@ local function bullet(map_draw3ds)
         current_time = 0,
         aabb = {},
         texture = {},
+        ---@param self bullet
+        ---@param owner Draw3D
+        ---@param forward Vec3
         setup = function(self, owner, forward)
             self.aabb = AABB()
             self.texture = Texture()
-            self.texture:fill_color(Color(1.0, 1.0, 1.0, 1.0))
+            self.texture:FillColor(Color(1.0, 1.0, 1.0, 1.0))
             self.drawer = Draw3D(self.texture)
             self.drawer.position = Vec3(owner.position.x, owner.position.y,
                 owner.position.z)
             self.drawer.rotation = owner.rotation
             self.drawer.scale = Vec3(0.2, 0.2, 0.2)
             self.forward = forward
-            sound:play()
+            sound:Play()
         end,
+        ---@param self bullet
         update = function(self)
+            local dT = Scene.DeltaTime()
             self.aabb.max = self.drawer.position + (
-                self.drawer.scale * m:aabb().max)
+                self.drawer.scale * m:GetAABB().max)
             self.aabb.min = self.drawer.position + (
-                self.drawer.scale * m:aabb().min)
-            self.current_time = self.current_time + scene.delta_time()
+                self.drawer.scale * m:GetAABB().min)
+            self.current_time = self.current_time + dT
             self.drawer.position = self.drawer.position +
-                (self.forward * Vec3(self.speed, self.speed, self.speed) * Vec3(scene.delta_time(), scene.delta_time(), scene.delta_time()))
+                (self.forward * Vec3(self.speed, self.speed, self.speed) * Vec3(dT))
         end,
+        ---@param self bullet
         draw = function(self)
-            self.drawer:draw()
+            self.drawer:Draw()
         end
     }
 

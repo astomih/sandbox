@@ -6,26 +6,26 @@ NOW_STAGE = 1
 texture_clear = Texture()
 drawer_clear = Draw2D(texture_clear)
 font_clear = Font()
-font_clear:load(DEFAULT_FONT_NAME, 64)
-font_clear:render_text(texture_clear, "STAGE CLEAR", Color(1, 1, 1, 1))
-drawer_clear.scale = texture_clear:size()
+font_clear:Load(64, DEFAULT_FONT_NAME)
+font_clear:RenderText(texture_clear, "STAGE CLEAR", Color(1, 1, 1, 1))
+drawer_clear.scale = texture_clear:Size()
 scene_switcher:setup()
 scene_switcher:start("")
 
 function Update()
     GUI_MANAGER:update()
-    mouse.hide_cursor(false)
+    Mouse.HideCursor(false)
     if scene_switcher.flag then
         scene_switcher:update()
         return
     end
-    if mouse.is_pressed(mouse.LEFT) then
+    if Mouse.IsPressed(Mouse.LEFT) then
         scene_switcher:start("scene01_stage")
     end
 end
 
 function Draw()
-    drawer_clear:draw()
+    drawer_clear:Draw()
     scene_switcher:draw()
     GUI_MANAGER:draw()
 end

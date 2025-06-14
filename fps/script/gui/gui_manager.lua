@@ -1,12 +1,19 @@
-local gui_manager = {}
-
-
-
+---@class gui_manager
+---@field drawers Draw2D[]
+---@field current_drawer_pos number
+---@field textures Texture[]
+---@field current_texture_pos number
+---@field max_object number
+---@field add_object_pool fun(self: gui_manager, new_size: number)
+---@field add fun(self: gui_manager, drawer: Draw2D)
+---@field get_texture fun(self: gui_manager): Texture
+---@field update fun(self: gui_manager)
+---@field draw fun(self: gui_manager)
+---@return gui_manager
 local function gui_manager()
   local object = {
     drawers = {},
     current_drawer_pos = 1,
-    ---@type Texture[]
     textures = {},
     current_texture_pos = 1,
     max_object = 1000,

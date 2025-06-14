@@ -1,0 +1,43 @@
+---@class Player
+---@field drawer Draw3D
+---@field model Model
+---@field bullets bullet[]
+---@field hp number
+---@field hp_max number
+---@field hp_drawer Draw2D
+---@field hp_font Font
+---@field hp_font_texture Texture
+---@field stamina number
+---@field stamina_max number
+---@field stamina_recover_speed number
+---@field stamina_boost_cost number
+---@field stamina_run_cost number
+---@field stamina_texture Texture
+---@field stamina_drawer Draw2D
+---@field stamina_max_texture Texture
+---@field stamina_max_drawer Draw2D
+---@field aabb AABB
+---@field bullet_time number
+---@field bullet_timer number
+---@field bullet_flag boolean
+---@field efks effect[]
+---@field is_shot boolean
+---@field boost number
+---@field boost_time number
+---@field boost_timer number
+---@field boost_mag number
+---@field boost_sound Sound
+---@field is_boost boolean
+---@field speed_min number
+---@field speed_max number
+---@field blur_time number
+---@field boost_reset fun(self: Player)
+---@field setup fun(self: Player, map: Grid, map_size_x: number, map_size_y: number)
+---@field horizontal number
+---@field vertical number
+---@field update fun(self: Player, map: Grid, map_draw3ds: world[][], map_size_x: number, map_size_y: number)
+---@field draw3 fun(self: Player)
+---@field draw2 fun(self: Player)
+---@field render_text fun(self: Player)
+---@return Player
+function Player() return {} end

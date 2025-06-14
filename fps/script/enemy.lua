@@ -1,31 +1,44 @@
 local bombed = Sound()
-bombed:load("bombed.wav")
+bombed:Load("bombed.wav")
 local r1 = 0
 local r2 = 0
+
+---@param map Grid
+---@param map_size_x number
+---@param map_size_y number
 local function decide_pos(map, map_size_x, map_size_y)
-    r1 = math.random(1, map_size_x)
-    r2 = math.random(1, map_size_y)
-    return map:at(r1, r2) < MAP_CHIP_WALKABLE
+    r1 = Random.GetRange(1, map_size_x)
+    r2 = Random.GetRange(1, map_size_y)
+    return map:At(r1, r2) < MAP_CHIP_WALKABLE
 end
 
-local enemy_model = {}
-enemy_model[1] = Model()
-enemy_model[1]:load("enemy.glb")
-enemy_model[2] = Model()
-enemy_model[2]:load("enemy.glb")
-enemy_model[3] = Model()
-enemy_model[3]:load("enemy.glb")
-enemy_model[4] = Model()
-enemy_model[4]:load("enemy.glb")
-for i = 1, 4 do
-    enemy_model[i]:aabb().max.z = 10.0
-    enemy_model[i]:aabb().min.z = -10.0
-end
+local enemy_model = Model()
+enemy_model:Load("enemy.glb")
+enemy_model:GetAABB().max.z = 10.0
+enemy_model:GetAABB().min.z = -10.0
 
 local enemy_texture = Texture()
-enemy_texture:fill_color(Color(0, 1, 0, 1))
+enemy_texture:FillColor(Color(0, 1, 0, 1))
 
 
+---@class enemy
+---@field drawer Draw3D
+---@field speed number
+---@field search_length number
+---@field hp number
+---@field aabb AABB
+---@field is_collision_first boolean
+---@field collision_time number
+---@field collision_timer number
+---@field map Grid
+---@field get_forward_z fun(drawer: Draw3D): Vec2
+---@field bfs BFSGrid
+---@field add_damage fun(self: enemy, damage: number): boolean
+---@field setup fun(self: enemy, _map: Grid, map_size_x: number, map_size_y: number)
+---@field update fun(self: enemy, player: Player)
+---@field draw fun(self: enemy)
+---@field player_collision fun(self: enemy, player: Player)
+---@return enemy
 local enemy = function()
     local object = {
         drawer = {},
@@ -37,16 +50,14 @@ local enemy = function()
         collision_time = {},
         collision_timer = {},
         map = {},
-        model_index = 1,
         get_forward_z = function(drawer)
             return Vec2(-math.sin(math.rad(drawer.rotation.z)),
                 math.cos(math.rad(-drawer.rotation.z)))
         end,
         bfs = {},
-        -- Add damage to enemy
-        -- @param damage Damage value
-        -- @return true if enemy is dead
-        -- @return false if enemy is alive
+        ---Add damage to enemy
+        ---@param damage number Damage value
+        ---@return boolean Returns true if the enemy is dead
         add_damage = function(self, damage)
             self.hp = self.hp - damage
             if self.hp <= 0 then
@@ -54,30 +65,15 @@ local enemy = function()
             end
             return false
         end,
+        ---@param self enemy
+        ---@param _map Grid
+        ---@param map_size_x number
+        ---@param map_size_y number
         setup = function(self, _map, map_size_x, map_size_y)
             self.bfs = BFSGrid(_map)
             self.drawer = Draw3D(enemy_texture)
-            if NOW_STAGE == 1 then
-                self.drawer.model = enemy_model[1]
-                self.drawer.scale = Vec3(0.5, 0.5, 0.5)
-                self.model_index = 1
-            end
-            if NOW_STAGE == 2 then
-                if math.random(0, 1) == 0 then
-                    self.drawer.model = enemy_model[2]
-                    self.drawer.scale = Vec3(1, 1, 1)
-                    self.model_index = 2
-                else
-                    self.drawer.model = enemy_model[3]
-                    self.drawer.scale = Vec3(1, 1, 1)
-                    self.model_index = 3
-                end
-            end
-            if NOW_STAGE == 3 then
-                self.drawer.model = enemy_model[4]
-                self.drawer.scale = Vec3(1, 1, 1)
-                self.model_index = 4
-            end
+            self.drawer.model = enemy_model
+            self.drawer.scale = Vec3(0.5, 0.5, 0.5)
             self.aabb = AABB()
             self.map = _map
             r1 = 0
@@ -89,18 +85,21 @@ local enemy = function()
             self.collision_time = 1.0
             self.collision_timer = 0.0
         end,
+        ---@param self enemy
+        ---@param player Player
         update = function(self, player)
-            local length = (self.drawer.position - player.drawer.position):length()
+            local dT = Scene.DeltaTime()
+            local length = (self.drawer.position - player.drawer.position):Length()
             if length > self.search_length then
                 return
             end
-            self.aabb:update_world(self.drawer.position, self.drawer.scale, enemy_model[self.model_index]:aabb())
+            self.aabb:UpdateWorld(self.drawer.position, self.drawer.scale, enemy_model:GetAABB())
             -- If there is a wall between the player and the enemy, the enemy will not move.
-            local start = Point2i(
+            local start = Vec2(
                 self.drawer.position.x / TILE_SIZE,
                 self.drawer.position.y / TILE_SIZE
             )
-            local goal = Point2i(
+            local goal = Vec2(
                 player.drawer.position.x / TILE_SIZE,
                 player.drawer.position.y / TILE_SIZE
             )
@@ -110,25 +109,25 @@ local enemy = function()
             local min_y = math.min(start.y, goal.y)
             local max_y = math.max(start.y, goal.y)
             for i = min_x, max_x do
-                if self.map:at(i, start.y) < MAP_CHIP_WALKABLE then
+                if self.map:At(i, start.y) < MAP_CHIP_WALKABLE then
                     return
                 end
             end
             for i = min_y, max_y do
-                if self.map:at(start.x, i) < MAP_CHIP_WALKABLE then
+                if self.map:At(start.x, i) < MAP_CHIP_WALKABLE then
                     return
                 end
             end
             self.drawer.rotation = Vec3(0, 0,
                 math.deg(
-                    -math.atan(
-                        player.drawer.position.x -
-                        self.drawer.position.x,
+                    -math.atan2(
                         player.drawer.position.y -
-                        self.drawer.position.y)))
-            if self.bfs:find_path(start, goal) then
-                local path = self.bfs:trace()
-                path = self.bfs:trace()
+                        self.drawer.position.y,
+                        player.drawer.position.x -
+                        self.drawer.position.x)))
+            if self.bfs:FindPath(start, goal) then
+                local path = self.bfs:Trace()
+                path = self.bfs:Trace()
 
                 local dir = Vec2(
                     path.x * TILE_SIZE - self.drawer.position.x,
@@ -148,25 +147,30 @@ local enemy = function()
 
                 self.drawer.position.x =
                     self.drawer.position.x +
-                    dir.x * scene.delta_time() * self.speed
+                    dir.x * dT * self.speed
                 self.drawer.position.y =
                     self.drawer.position.y +
-                    dir.y * scene.delta_time() * self.speed
+                    dir.y * dT * self.speed
             else
                 self.drawer.position.x =
-                    self.drawer.position.x + scene.delta_time() * self.speed *
+                    self.drawer.position.x + dT * self.speed *
                     self.get_forward_z(self.drawer).x
                 self.drawer.position.y =
-                    self.drawer.position.y + scene.delta_time() * self.speed *
+                    self.drawer.position.y + dT * self.speed *
                     self.get_forward_z(self.drawer).y
             end
-            self.bfs:reset()
+            self.bfs:Reset()
         end,
-        draw = function(self) self.drawer:draw() end,
+
+        ---@param self enemy
+        draw = function(self) self.drawer:Draw() end,
+
+        ---@param self enemy
+        ---@param player Player
         player_collision = function(self, player)
-            if collision.aabb_aabb(self.aabb, player.aabb) then
+            if Collision.AABBvsAABB(self.aabb, player.aabb) then
                 if self.is_collision_first then
-                    bombed:play()
+                    bombed:Play()
                     player.hp = player.hp - 1
                     if player.hp <= 0 then
                         player.hp = 0
@@ -174,9 +178,9 @@ local enemy = function()
                     player:render_text()
                     self.is_collision_first = false
                 else
-                    self.collision_timer = self.collision_timer + scene.delta_time()
+                    self.collision_timer = self.collision_timer + Scene.DeltaTime()
                     if self.collision_timer > self.collision_time then
-                        bombed:play()
+                        bombed:Play()
                         player.hp = player.hp - 10
                         if player.hp <= 0 then
                             player.hp = 0

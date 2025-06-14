@@ -1,3 +1,16 @@
+---@class camera_controller
+---@field position Vec3
+---@field target Vec3
+---@field up Vec3
+---@field prev_boost boolean
+---@field is_tracking_player boolean
+---@field player Player
+---@field py number
+---@field pz number
+---@field track_speed number
+---@field setup fun(self: camera_controller, player: Player)
+---@field update fun(self: camera_controller)
+---@return camera_controller
 local function camera_controller()
   local object = {
     position = Vec3(0, 0, 0),
@@ -9,6 +22,8 @@ local function camera_controller()
     py = 5,
     pz = 12,
     track_speed = 15,
+    ---@paramv self camera_controller
+    ---@param player Player
     setup = function(self, player)
       self.player = player
       self.position = Vec3(self.player.drawer.position.x,
@@ -18,13 +33,14 @@ local function camera_controller()
         self.player.drawer.position.y,
         self.player.drawer.position.z)
     end,
+    ---@param self camera_controller
     update = function(self)
       -- rotation to look at the player Vec3
       self.target.x = math.sin(math.rad(self.player.drawer.rotation.z))
       self.target.y = math.cos(math.rad(self.player.drawer.rotation.z))
       self.target.z = math.sin(math.rad(self.player.drawer.rotation.y))
-      self.position = self.player.drawer.position:copy()
-      scene.camera():lookat(self.position, self.position + self.target, Vec3(0, 0, 1))
+      self.position = self.player.drawer.position:Copy()
+      Scene.GetCamera():LookAt(self.position, self.position + self.target, Vec3(0, 0, 1))
     end
   }
   return object

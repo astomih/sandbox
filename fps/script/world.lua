@@ -1,3 +1,9 @@
+---@class world
+---@field position Vec3
+---@field rotation Vec3
+---@field scale Vec3
+---@field aabb AABB
+---@return world
 local function world()
     local object = {
         position = Vec3(0),

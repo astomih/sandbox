@@ -12,10 +12,11 @@ function Room:new(grid_size, minimum, maximum)
   return self
 end
 
+---@param grid Grid
 function Room:fill(grid, floor_id)
   for dy = 0, self.size.y - 1 do
     for dx = 0, self.size.x - 1 do
-      grid:set(self.position.x + dx,
+      grid:Set(self.position.x + dx,
         self.position.y + dy,
         floor_id)
     end
@@ -31,13 +32,13 @@ function Room:get_size() return self.size end
 function Room:_set_size(minimum, maximum)
   local w = math.random(minimum.x, maximum.x)
   local h = math.random(minimum.y, maximum.y)
-  self.size = Point2i(w, h)
+  self.size = Vec2i(w, h)
 end
 
 function Room:_set_random_position(grid_size)
   local px = math.random(2, grid_size.x - self.size.x)
   local py = math.random(2, grid_size.y - self.size.y)
-  self.position = Point2i(px, py)
+  self.position = Vec2i(px, py)
 end
 
 return Room

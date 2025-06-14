@@ -1,5 +1,19 @@
+---@class scene_switcher
+---@field texture Texture
+---@field color Color
+---@field drawer Draw2D
+---@field time number
+---@field timer number
+---@field flag boolean
+---@field scene_name string
+---@field is_launch boolean
+---@field setup fun(self: scene_switcher)
+---@field update fun(self: scene_switcher)
+---@field draw fun(self: scene_switcher)
+---@field start fun(self: scene_switcher, scene_name: string)
+---@return scene_switcher
 local scene_switcher = function()
-  local object = {
+  return {
     texture = Texture(),
     color = Color(0, 0, 0, 0.0),
     drawer = Draw2D(),
@@ -65,6 +79,5 @@ local scene_switcher = function()
       self.flag = true
     end
   }
-  return object
 end
 return scene_switcher
