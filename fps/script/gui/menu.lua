@@ -68,6 +68,7 @@ local function menu()
             end
             if not self.hide then
                 Mouse.HideCursor(false)
+                Mouse.SetRelative(false)
                 text:show("Menu", Vec2(0, 200), 50)
                 if button:show("Resume", Vec2(0, 70), Vec2(150, 50)) or is_esc then
                     self.hide_next = true

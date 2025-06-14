@@ -11,10 +11,11 @@ font_dead:RenderText(texture_dead, "GAME OVER", Color(1, 0.25, 0.25, 1))
 drawer_dead.scale = texture_dead:Size()
 scene_switcher:setup()
 scene_switcher:start("")
+Mouse.HideCursor(false)
+Mouse.SetRelative(false)
 
 function Update()
     GUI_MANAGER:update()
-    Mouse.HideCursor(false)
     if scene_switcher.flag then
         scene_switcher:update()
         return

@@ -121,10 +121,10 @@ local enemy = function()
             self.drawer.rotation = Vec3(0, 0,
                 math.deg(
                     -math.atan2(
-                        player.drawer.position.y -
-                        self.drawer.position.y,
                         player.drawer.position.x -
-                        self.drawer.position.x)))
+                        self.drawer.position.x,
+                        player.drawer.position.y -
+                        self.drawer.position.y)))
             if self.bfs:FindPath(start, goal) then
                 local path = self.bfs:Trace()
                 path = self.bfs:Trace()

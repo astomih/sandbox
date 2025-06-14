@@ -11,10 +11,11 @@ font_clear:RenderText(texture_clear, "STAGE CLEAR", Color(1, 1, 1, 1))
 drawer_clear.scale = texture_clear:Size()
 scene_switcher:setup()
 scene_switcher:start("")
+Mouse.HideCursor(false)
+Mouse.SetRelative(false)
 
 function Update()
     GUI_MANAGER:update()
-    Mouse.HideCursor(false)
     if scene_switcher.flag then
         scene_switcher:update()
         return

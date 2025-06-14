@@ -30,6 +30,7 @@ local function equipment_menu()
         return false
       end
       Mouse.HideCursor(false)
+      Mouse.SetRelative(false)
       GUI_MANAGER:add(self.ui_panel)
       button.fg_color = Color(1, 1, 1, 0.9)
       button.bg_color = Color(1, 0, 0, 1.0)
