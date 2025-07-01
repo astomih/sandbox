@@ -32,13 +32,13 @@ function Room:get_size() return self.size end
 function Room:_set_size(minimum, maximum)
   local w = math.random(minimum.x, maximum.x)
   local h = math.random(minimum.y, maximum.y)
-  self.size = Vec2i(w, h)
+  self.size = sn.Vec2i(w, h)
 end
 
 function Room:_set_random_position(grid_size)
   local px = math.random(2, grid_size.x - self.size.x)
   local py = math.random(2, grid_size.y - self.size.y)
-  self.position = Vec2i(px, py)
+  self.position = sn.Vec2i(px, py)
 end
 
 return Room

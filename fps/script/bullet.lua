@@ -1,5 +1,5 @@
-local m = Model()
-local sound = Sound()
+local m = sn.Model()
+local sound = sn.Sound()
 sound:Load("shot.wav")
 sound:SetVolume(0.3)
 
@@ -19,7 +19,7 @@ local function bullet(map_draw3ds)
     local object = {
         speed = 40,
         drawer = {},
-        forward = Vec3(0, 0, 0),
+        forward = sn.Vec3(0, 0, 0),
         life_time = 0.25,
         current_time = 0,
         aabb = {},
@@ -28,27 +28,27 @@ local function bullet(map_draw3ds)
         ---@param owner Draw3D
         ---@param forward Vec3
         setup = function(self, owner, forward)
-            self.aabb = AABB()
-            self.texture = Texture()
-            self.texture:FillColor(Color(1.0, 1.0, 1.0, 1.0))
-            self.drawer = Draw3D(self.texture)
-            self.drawer.position = Vec3(owner.position.x, owner.position.y,
+            self.aabb = sn.AABB()
+            self.texture = sn.Texture()
+            self.texture:FillColor(sn.Color(1.0, 1.0, 1.0, 1.0))
+            self.drawer = sn.Draw3D(self.texture)
+            self.drawer.position = sn.Vec3(owner.position.x, owner.position.y,
                 owner.position.z)
             self.drawer.rotation = owner.rotation
-            self.drawer.scale = Vec3(0.2, 0.2, 0.2)
+            self.drawer.scale = sn.Vec3(0.2, 0.2, 0.2)
             self.forward = forward
             sound:Play()
         end,
         ---@param self bullet
         update = function(self)
-            local dT = Scene.DeltaTime()
+            local dT = sn.Scene.DeltaTime()
             self.aabb.max = self.drawer.position + (
                 self.drawer.scale * m:GetAABB().max)
             self.aabb.min = self.drawer.position + (
                 self.drawer.scale * m:GetAABB().min)
             self.current_time = self.current_time + dT
             self.drawer.position = self.drawer.position +
-                (self.forward * Vec3(self.speed, self.speed, self.speed) * Vec3(dT))
+                (self.forward * sn.Vec3(self.speed, self.speed, self.speed) * sn.Vec3(dT))
         end,
         ---@param self bullet
         draw = function(self)

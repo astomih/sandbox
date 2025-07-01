@@ -7,7 +7,7 @@ local Corridor = require("dungeon_generator/corridor")
 local function center_of(room)
   local p = room:get_position()
   local s = room:get_size()
-  return Vec2i(p.x + math.floor(s.x / 2),
+  return sn.Vec2i(p.x + math.floor(s.x / 2),
     p.y + math.floor(s.y / 2))
 end
 
@@ -22,15 +22,15 @@ local function dungeon_generator(grid, floor, wall,
   if grid:Width() < 3 or grid:Height() < 3 then return end
 
   local recreate   = false
-  local grid_size  = Vec2i(grid:Width(), grid:Height())
+  local grid_size  = sn.Vec2i(grid:Width(), grid:Height())
 
   local min_rooms  = 5
   local max_rooms  = 14
   local room_count = math.random(min_rooms, max_rooms)
 
-  local min_size   = Vec2i(5, 5)
+  local min_size   = sn.Vec2i(5, 5)
   local sz         = 5 + max_rooms - room_count
-  local max_size   = Vec2i(sz, sz)
+  local max_size   = sn.Vec2i(sz, sz)
 
   ------------------------------------------------------------
   -- Room generate
@@ -76,7 +76,7 @@ local function dungeon_generator(grid, floor, wall,
   -- Check
   ------------------------------------------------------------
   local function reachable(a, b)
-    local bfs = BFSGrid(grid)
+    local bfs = sn.BFSGrid(grid)
     return bfs:FindPath(a, b)
   end
 

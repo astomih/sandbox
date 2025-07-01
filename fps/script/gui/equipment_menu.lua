@@ -10,12 +10,12 @@ local function equipment_menu()
     is_list = false,
     setup = function(self)
       -- setup menu
-      self.ui_panel_texture = Texture()
-      self.ui_panel_texture:FillColor(Color(1, 1, 1, 0.5))
-      self.ui_panel = Draw2D(self.ui_panel_texture)
-      self.ui_panel.scale = Vec2(1120, 630)
-      button.fg_color = Color(0, 0, 0, 0.9)
-      button.bg_color = Color(1, 1, 1, 1.0)
+      self.ui_panel_texture = sn.Texture()
+      self.ui_panel_texture:FillColor(sn.Color(1, 1, 1, 0.5))
+      self.ui_panel = sn.Draw2D(self.ui_panel_texture)
+      self.ui_panel.scale = sn.Vec2(1120, 630)
+      button.fg_color = sn.Color(0, 0, 0, 0.9)
+      button.bg_color = sn.Color(1, 1, 1, 1.0)
     end,
     draw = function(self)
       if self.hide then
@@ -23,58 +23,58 @@ local function equipment_menu()
       end
     end,
     update = function(self)
-      if Keyboard.IsPressed(Keyboard.E) then
+      if sn.Keyboard.IsPressed(sn.Keyboard.E) then
         self.hide = not self.hide
       end
       if self.hide then
         return false
       end
-      Mouse.HideCursor(false)
-      Mouse.SetRelative(false)
+      sn.Mouse.HideCursor(false)
+      sn.Mouse.SetRelative(false)
       GUI_MANAGER:add(self.ui_panel)
-      button.fg_color = Color(1, 1, 1, 0.9)
-      button.bg_color = Color(1, 0, 0, 1.0)
-      if button:show("BACK", Vec2(500, 270), Vec2(100, 50)) then
+      button.fg_color = sn.Color(1, 1, 1, 0.9)
+      button.bg_color = sn.Color(1, 0, 0, 1.0)
+      if button:show("BACK", sn.Vec2(500, 270), sn.Vec2(100, 50)) then
         self.hide = true
       end
-      button.fg_color = Color(0, 0, 0, 0.9)
-      button.bg_color = Color(1, 1, 1, 1.0)
-      text:show("MHP: ", Vec2(-400, 200), 50)
-      text:show("STM: ", Vec2(-400, 175), 50)
-      text:show("OIL: ", Vec2(-400, 150), 50)
+      button.fg_color = sn.Color(0, 0, 0, 0.9)
+      button.bg_color = sn.Color(1, 1, 1, 1.0)
+      text:show("MHP: ", sn.Vec2(-400, 200), 50)
+      text:show("STM: ", sn.Vec2(-400, 175), 50)
+      text:show("OIL: ", sn.Vec2(-400, 150), 50)
 
-      if button:show("SP1", Vec2(-400, 100), Vec2(150, 50)) then
+      if button:show("SP1", sn.Vec2(-400, 100), sn.Vec2(150, 50)) then
         self.is_list = true
       end
-      if button:show("SP2", Vec2(-400, 0), Vec2(150, 50)) then
+      if button:show("SP2", sn.Vec2(-400, 0), sn.Vec2(150, 50)) then
         self.is_list = true
       end
-      if button:show("ORBIT", Vec2(-400, -100), Vec2(150, 50)) then
+      if button:show("ORBIT", sn.Vec2(-400, -100), sn.Vec2(150, 50)) then
         self.is_list = true
       end
-      if button:show("BOOSTER", Vec2(-400, -200), Vec2(150, 50)) then
+      if button:show("BOOSTER", sn.Vec2(-400, -200), sn.Vec2(150, 50)) then
         self.is_list = true
       end
       if self.is_list then
-        scroll:show(Vec2(200, 0), Vec2(20, 200))
+        scroll:show(sn.Vec2(200, 0), sn.Vec2(20, 200))
         local offset = scroll.pos.y
-        local tex = Texture()
-        tex:FillColor(Color(0, 0, 0, 0.5))
-        image:show(tex, Vec2(0, 0), Vec2(250, 500))
-        if button:show("a", Vec2(0, 100 + offset), Vec2(200, 50)) then
+        local tex = sn.Texture()
+        tex:FillColor(sn.Color(0, 0, 0, 0.5))
+        image:show(tex, sn.Vec2(0, 0), sn.Vec2(250, 500))
+        if button:show("a", sn.Vec2(0, 100 + offset), sn.Vec2(200, 50)) then
           -- do
         end
-        if button:show("b", Vec2(0, 50 + offset), Vec2(200, 50)) then
+        if button:show("b", sn.Vec2(0, 50 + offset), sn.Vec2(200, 50)) then
           -- do
         end
-        if button:show("c", Vec2(0, 0 + offset), Vec2(200, 50)) then
+        if button:show("c", sn.Vec2(0, 0 + offset), sn.Vec2(200, 50)) then
           -- do
         end
-        image:show(tex, Vec2(0, 200), Vec2(250, 50))
-        text:show("EQUIPMENT LIST", Vec2(0, 200), 50)
-        button.fg_color = Color(1, 1, 1, 0.9)
-        button.bg_color = Color(1, 0, 0, 1.0)
-        if button:show("Close", Vec2(0, -150), Vec2(200, 50))
+        image:show(tex, sn.Vec2(0, 200), sn.Vec2(250, 50))
+        text:show("EQUIPMENT LIST", sn.Vec2(0, 200), 50)
+        button.fg_color = sn.Color(1, 1, 1, 0.9)
+        button.bg_color = sn.Color(1, 0, 0, 1.0)
+        if button:show("Close", sn.Vec2(0, -150), sn.Vec2(200, 50))
         then
           self.is_list = false
         end

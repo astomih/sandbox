@@ -47,9 +47,9 @@ local function gui_manager()
     end
   }
   for i = 1, object.max_object do
-    object.drawers[i] = Draw2D(Texture())
-    object.textures[i] = Texture()
-    object.textures[i + object.max_object] = Texture()
+    object.drawers[i] = sn.Draw2D(sn.Texture())
+    object.textures[i] = sn.Texture()
+    object.textures[i + object.max_object] = sn.Texture()
   end
   return object
 end

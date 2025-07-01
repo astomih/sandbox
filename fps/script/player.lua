@@ -14,7 +14,7 @@ local function decide_pos(map, map_size_x, map_size_y)
     return map:At(r1, r2) == 1
 end
 
-local beforeMousePos = Vec2(0, 0)
+local beforeMousePos = sn.Vec2(0, 0)
 
 local Player = {
     drawer = {},
@@ -59,28 +59,28 @@ local Player = {
     ---@param map_size_x number
     ---@param map_size_y number
     setup = function(self, map, map_size_x, map_size_y)
-        self.model = Model()
+        self.model = sn.Model()
         self.model:Load("triangle.glb")
-        self.drawer = Draw3D(DEFAULT_TEXTURE)
+        self.drawer = sn.Draw3D(DEFAULT_TEXTURE)
         self.drawer.model = self.model
-        self.aabb = AABB()
+        self.aabb = sn.AABB()
         self.bullet_time = 0.1
         self.bullet_timer = 0.0
         self.hp = 100
-        self.hp_font = Font()
+        self.hp_font = sn.Font()
         self.hp_font:Load(64, DEFAULT_FONT_NAME)
-        self.hp_font_texture = Texture()
-        self.hp_drawer = Draw2D(self.hp_font_texture)
+        self.hp_font_texture = sn.Texture()
+        self.hp_drawer = sn.Draw2D(self.hp_font_texture)
         self.stamina = self.stamina_max
-        self.stamina_texture = Texture()
-        self.stamina_texture:FillColor(Color(1.0, 1.0, 1.0, 0.9))
-        self.stamina_max_texture = Texture()
-        self.stamina_max_texture:FillColor(Color(0.0, 0.0, 0.0, 0.2))
-        self.stamina_drawer = Draw2D(self.stamina_texture)
-        self.stamina_drawer.position = Vec2(0, 350)
+        self.stamina_texture = sn.Texture()
+        self.stamina_texture:FillColor(sn.Color(1.0, 1.0, 1.0, 0.9))
+        self.stamina_max_texture = sn.Texture()
+        self.stamina_max_texture:FillColor(sn.Color(0.0, 0.0, 0.0, 0.2))
+        self.stamina_drawer = sn.Draw2D(self.stamina_texture)
+        self.stamina_drawer.position = sn.Vec2(0, 350)
         self.stamina_drawer.scale = UI_SCALE_Vec2(300, 10)
-        self.stamina_max_drawer = Draw2D(self.stamina_max_texture)
-        self.stamina_max_drawer.position = Vec2(0, 350)
+        self.stamina_max_drawer = sn.Draw2D(self.stamina_max_texture)
+        self.stamina_max_drawer.position = sn.Vec2(0, 350)
         self.stamina_max_drawer.scale = UI_SCALE_Vec2(300, 10)
 
         self:render_text()
@@ -88,11 +88,11 @@ local Player = {
         r2 = 0
         while decide_pos(map, map_size_x, map_size_y) == true do
         end
-        self.drawer.position = Vec3(r1 * 2, r2 * 2, 1)
-        self.drawer.scale = Vec3(1, 1, 1)
+        self.drawer.position = sn.Vec3(r1 * 2, r2 * 2, 1)
+        self.drawer.scale = sn.Vec3(1, 1, 1)
         self.hp_drawer.position.x = 0
         self.hp_drawer.position.y = 300
-        self.boost_sound = Sound()
+        self.boost_sound = sn.Sound()
         self.boost_sound:Load("boost.wav")
         self.boost_sound:SetVolume(0.2)
     end,
@@ -109,45 +109,45 @@ local Player = {
         input_vector = calc_input_vector()
         local is_move = input_vector.x ~= 0 or input_vector.y ~= 0
 
-        if Keyboard.IsDown(Keyboard.LSHIFT) and is_move then
+        if sn.Keyboard.IsDown(sn.Keyboard.LSHIFT) and is_move then
             speed = self.speed_max
-            self.stamina = self.stamina - self.stamina_run_cost * Scene.DeltaTime()
+            self.stamina = self.stamina - self.stamina_run_cost * sn.Scene.DeltaTime()
             if self.stamina <= 0.0 then
                 self.stamina = 0.0
                 speed = self.speed_min
             end
         else
             speed = self.speed_min
-            self.stamina = self.stamina + Scene.DeltaTime() * self.stamina_recover_speed
+            self.stamina = self.stamina + sn.Scene.DeltaTime() * self.stamina_recover_speed
             if self.stamina > self.stamina_max then
                 self.stamina = self.stamina_max
             end
         end
         -- bullet
-        if Mouse.IsPressed(Mouse.LEFT) then
+        if sn.Mouse.IsPressed(sn.Mouse.LEFT) then
             self.bullet_flag = true
         end
-        self.bullet_timer = self.bullet_timer + Scene.DeltaTime()
+        self.bullet_timer = self.bullet_timer + sn.Scene.DeltaTime()
         if self.bullet_flag then
             if self.bullet_timer >
-                self.bullet_time and (Mouse.IsDown(Mouse.LEFT)) then
+                self.bullet_time and (sn.Mouse.IsDown(sn.Mouse.LEFT)) then
                 local b = bullet(map_draw3ds)
 
-                local forward = Vec3(math.sin(math.rad(self.drawer.rotation.z)),
+                local forward = sn.Vec3(math.sin(math.rad(self.drawer.rotation.z)),
                     math.cos(math.rad(self.drawer.rotation.z)), math.sin(math.rad(self.drawer.rotation.y)))
-                local cross = Vec3(math.sin(math.rad(self.drawer.rotation.z + 90)),
+                local cross = sn.Vec3(math.sin(math.rad(self.drawer.rotation.z + 90)),
                     math.cos(math.rad(self.drawer.rotation.z + 90)), -0.5)
 
-                local rot = forward * Vec3(1000, 1000, 1000) - cross
+                local rot = forward * sn.Vec3(1000, 1000, 1000) - cross
                 rot = rot:Normalize()
                 b:setup(self.drawer, rot)
 
-                b.drawer.position = b.drawer.position + cross * Vec3(0.25, 0.25, 1)
+                b.drawer.position = b.drawer.position + cross * sn.Vec3(0.25, 0.25, 1)
 
                 table.insert(self.bullets, b)
                 self.bullet_timer = 0.0
             end
-            if Mouse.IsReleased(Mouse.LEFT) then
+            if sn.Mouse.IsReleased(sn.Mouse.LEFT) then
                 self.bullet_flag = false
             end
         end
@@ -155,12 +155,12 @@ local Player = {
             if self.boost_timer >= self.boost_time then
                 self:boost_reset()
             else
-                local t = Periodic.Sin0_1(self.boost_time * 2.0, self.boost_timer) - 0.5
+                local t = sn.Periodic.Sin0_1(self.boost_time * 2.0, self.boost_timer) - 0.5
                 t = t * 0.2
-                self.boost_timer = self.boost_timer + Scene.DeltaTime()
+                self.boost_timer = self.boost_timer + sn.Scene.DeltaTime()
             end
         else
-            if Keyboard.IsPressed(Keyboard.SPACE) and is_move then
+            if sn.Keyboard.IsPressed(sn.Keyboard.SPACE) and is_move then
                 if self.stamina >= self.stamina_boost_cost then
                     self.stamina = self.stamina - self.stamina_boost_cost
                     if self.stamina <= 0.0 then
@@ -168,10 +168,10 @@ local Player = {
                     end
                     local efk = effect()
                     efk:setup()
-                    efk.texture:FillColor(Color(0.6, 0.6, 1.0, 1.0))
+                    efk.texture:FillColor(sn.Color(0.6, 0.6, 1.0, 1.0))
                     efk.impl = function(e)
                         for i = 1, e.max_particles do
-                            local t = Scene.DeltaTime() * 2
+                            local t = sn.Scene.DeltaTime() * 2
                             e.worlds[i].position.x =
                                 e.worlds[i].position.x + math.cos(i) * t
                             e.worlds[i].position.y =
@@ -197,7 +197,7 @@ local Player = {
             if v.current_time > v.life_time then
                 local efk = effect()
                 efk:setup()
-                efk.texture:FillColor(Color(1.0, 1.0, 1.0, 1.0))
+                efk.texture:FillColor(sn.Color(1.0, 1.0, 1.0, 1.0))
                 for j = 1, efk.max_particles do
                     efk.worlds[j].position = v.drawer.position:Copy()
                 end
@@ -210,7 +210,7 @@ local Player = {
             v:update()
             if v.is_stop then table.remove(self.efks, i) end
         end
-        local before_pos = Vec3(self.drawer.position.x, self.drawer.position.y,
+        local before_pos = sn.Vec3(self.drawer.position.x, self.drawer.position.y,
             self.drawer.position.z)
         local final_speed = 0.0
         if self.is_boost then
@@ -226,47 +226,48 @@ local Player = {
         local flag = false
         if input_vector.y ~= 0 then
             flag = true
-            self.drawer.position = self.drawer.position + Vec3(
-                math.sin(math.rad(self.drawer.rotation.z)) * final_speed * Scene.DeltaTime() * input_vector.y,
+            self.drawer.position = self.drawer.position + sn.Vec3(
+                math.sin(math.rad(self.drawer.rotation.z)) * final_speed * sn.Scene.DeltaTime() * input_vector.y,
                 math.cos(math.rad(self.drawer.rotation.z)) *
                 final_speed *
-                Scene.DeltaTime() * input_vector.y,
+                sn.Scene.DeltaTime() * input_vector.y,
                 0)
         end
         if input_vector.x ~= 0 then
             flag = true
-            self.drawer.position = self.drawer.position + Vec3(
+            self.drawer.position = self.drawer.position + sn.Vec3(
                 math.sin(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) *
                 final_speed *
-                Scene.DeltaTime(),
+                sn.Scene.DeltaTime(),
                 math.cos(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) *
                 final_speed *
-                Scene.DeltaTime(),
+                sn.Scene.DeltaTime(),
                 0)
         end
 
         if flag then
             -- xとy成分でそれぞれあたり判定を行う
-            local dxy = Vec2(self.drawer.position.x, self.drawer.position.y) - Vec2(before_pos.x, before_pos.y)
-            self.aabb:UpdateWorld(self.drawer.position - Vec3(0, dxy.y, 0), self.drawer.scale, self.model:GetAABB())
-            if is_collision(self.drawer.position - Vec3(0, dxy.y, 0), self.aabb, map, map_draw3ds, map_size_x, map_size_y) then
+            local dxy = sn.Vec2(self.drawer.position.x, self.drawer.position.y) - sn.Vec2(before_pos.x, before_pos.y)
+            self.aabb:UpdateWorld(self.drawer.position - sn.Vec3(0, dxy.y, 0), self.drawer.scale, self.model:GetAABB())
+            if is_collision(self.drawer.position - sn.Vec3(0, dxy.y, 0), self.aabb, map, map_draw3ds, map_size_x, map_size_y) then
                 self.drawer.position.x = before_pos.x
             end
-            self.aabb:UpdateWorld(self.drawer.position - Vec3(dxy.x, 0, 0), self.drawer.scale, self.model:GetAABB())
-            if is_collision(self.drawer.position - Vec3(dxy.x, 0, 0), self.aabb, map, map_draw3ds, map_size_x, map_size_y) then
+            self.aabb:UpdateWorld(self.drawer.position - sn.Vec3(dxy.x, 0, 0), self.drawer.scale, self.model:GetAABB())
+            if is_collision(self.drawer.position - sn.Vec3(dxy.x, 0, 0), self.aabb, map, map_draw3ds, map_size_x, map_size_y) then
                 self.drawer.position.y = before_pos.y
             end
         end
-        local pos = Mouse.GetPositionOnScene()
-        self.drawer.rotation.y = self.drawer.rotation.y + math.sin(pos.y / Scene.Half().y) * 32.0
-        self.drawer.rotation.z = self.drawer.rotation.z + math.sin(pos.x / Scene.Half().x) * 32.0
-        Mouse.SetPositionOnScene(Vec2(0.0, 0.0))
+        local pos = sn.Mouse.GetPositionOnScene()
+        self.drawer.rotation.y = self.drawer.rotation.y + math.sin(pos.y / sn.Scene.Half().y) * 32.0
+
+        self.drawer.rotation.z = self.drawer.rotation.z + math.sin(pos.x / sn.Scene.Half().x) * 32.0
+        sn.Mouse.SetPositionOnScene(sn.Vec2(0.0, 0.0))
         local s_ratio = self.stamina / self.stamina_max
         self.stamina_drawer.scale.x = s_ratio * 300
         if s_ratio <= 0.2 then
-            self.stamina_texture:FillColor(Color(1.0, 0.0, 0.0, 0.9))
+            self.stamina_texture:FillColor(sn.Color(1.0, 0.0, 0.0, 0.9))
         else
-            self.stamina_texture:FillColor(Color(1.0, 1.0, 1.0, 0.9))
+            self.stamina_texture:FillColor(sn.Color(1.0, 1.0, 1.0, 0.9))
         end
     end,
     ---@param self Player
@@ -288,9 +289,9 @@ local Player = {
     ---@param self Player
     render_text = function(self)
         if self.hp / self.hp_max <= 0.2 then
-            self.hp_font:RenderText(self.hp_font_texture, "HP: " .. self.hp, Color(1, 0.0, 0.0, 0.8))
+            self.hp_font:RenderText(self.hp_font_texture, "HP: " .. self.hp, sn.Color(1, 0.0, 0.0, 0.8))
         else
-            self.hp_font:RenderText(self.hp_font_texture, "HP: " .. self.hp, Color(1, 1, 1, 0.9))
+            self.hp_font:RenderText(self.hp_font_texture, "HP: " .. self.hp, sn.Color(1, 1, 1, 0.9))
         end
         self.hp_drawer.scale = self.hp_font_texture:Size()
     end

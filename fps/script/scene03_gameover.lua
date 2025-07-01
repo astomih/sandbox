@@ -3,16 +3,16 @@ local font_dead = {}
 local drawer_dead = {}
 local scene_switcher = require("scene_switcher")()
 
-texture_dead = Texture()
-drawer_dead = Draw2D(texture_dead)
-font_dead = Font()
+texture_dead = sn.Texture()
+drawer_dead = sn.Draw2D(texture_dead)
+font_dead = sn.Font()
 font_dead:Load(64, DEFAULT_FONT_NAME)
-font_dead:RenderText(texture_dead, "GAME OVER", Color(1, 0.25, 0.25, 1))
+font_dead:RenderText(texture_dead, "GAME OVER", sn.Color(1, 0.25, 0.25, 1))
 drawer_dead.scale = texture_dead:Size()
 scene_switcher:setup()
 scene_switcher:start("")
-Mouse.HideCursor(false)
-Mouse.SetRelative(false)
+sn.Mouse.HideCursor(false)
+sn.Mouse.SetRelative(false)
 
 function Update()
     GUI_MANAGER:update()
@@ -20,7 +20,7 @@ function Update()
         scene_switcher:update()
         return
     end
-    if Mouse.IsPressed(Mouse.LEFT) then
+    if sn.Mouse.IsPressed(sn.Mouse.LEFT) then
         scene_switcher:start("main")
     end
 end

@@ -1,5 +1,5 @@
 local world = require "world"
-local tree = Model()
+local tree = sn.Model()
 
 ---@class effect
 ---@field duration number
@@ -35,7 +35,7 @@ local function effect()
         start_speed = 5.0,
         start_size = 1.0,
         start_rotation = 0.0,
-        start_color = Color(1, 1, 1, 1),
+        start_color = sn.Color(1, 1, 1, 1),
         gravity_multiplier = 0.0,
         inherit_velocity = 0.0,
         play_on_awake = false,
@@ -48,20 +48,20 @@ local function effect()
         timer = 0.0,
         ---@param self effect
         setup = function(self)
-            self.texture = Texture()
+            self.texture = sn.Texture()
             self.texture:FillColor(self.start_color)
-            self.drawer = Draw3D(self.texture)
+            self.drawer = sn.Draw3D(self.texture)
             for i = 1, self.max_particles do
                 self.worlds[i] = world()
-                self.worlds[i].position = Vec3(0, 0, 0)
-                self.worlds[i].rotation = Vec3(0, 0, 0)
-                self.worlds[i].scale = Vec3(0.1, 0.1, 0.1)
+                self.worlds[i].position = sn.Vec3(0, 0, 0)
+                self.worlds[i].rotation = sn.Vec3(0, 0, 0)
+                self.worlds[i].scale = sn.Vec3(0.1, 0.1, 0.1)
             end
             if self.play_on_awake then self.is_playing = true end
         end,
         ---@param self effect
         impl = function(self)
-            local dT = Scene.DeltaTime()
+            local dT = sn.Scene.DeltaTime()
             for i = 1, self.max_particles do
                 self.worlds[i].position.x =
                     self.worlds[i].position.x + math.cos(i) * dT
@@ -75,13 +75,13 @@ local function effect()
         update = function(self)
             --  if not self.is_playing then return end
             self.drawer:Clear()
-            self.timer = self.timer + Scene.DeltaTime()
+            self.timer = self.timer + sn.Scene.DeltaTime()
             if self.timer > self.start_lifetime then
                 self.timer = 0.0
                 for i = 1, self.max_particles do
-                    self.worlds[i].position = Vec3(0, 0, 0)
-                    self.worlds[i].rotation = Vec3(0, 0, 0)
-                    self.worlds[i].scale = Vec3(1, 1, 1)
+                    self.worlds[i].position = sn.Vec3(0, 0, 0)
+                    self.worlds[i].rotation = sn.Vec3(0, 0, 0)
+                    self.worlds[i].scale = sn.Vec3(1, 1, 1)
                 end
                 if not self.looping then
                     self.is_playing = false

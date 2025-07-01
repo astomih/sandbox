@@ -20,26 +20,26 @@ function Corridor:connect(grid, rooms, floor_id)
     local posB    = b:get_position()
     local sizeB   = b:get_size()
 
-    local left    = Vec2i(
+    local left    = sn.Vec2i(
       posA.x + sizeA.x - 1,
       math.random(posA.y, posA.y + sizeA.y - 1)
     )
-    local right   = Vec2i(
+    local right   = sn.Vec2i(
       posB.x,
       math.random(posB.y, posB.y + sizeB.y - 1)
     )
 
-    local current = Vec2i(left.x, left.y)
+    local current = sn.Vec2i(left.x, left.y)
     while current.x < right.x do
       grid:Set(current.x, current.y, floor_id)
-      table.insert(self.path, Vec2i(current.x, current.y))
+      table.insert(self.path, sn.Vec2i(current.x, current.y))
       current.x = current.x + 1
     end
 
     while current.y ~= right.y do
       grid:Set(current.x, current.y, floor_id)
       if current.y < right.y then
-        table.insert(self.path, Vec2i(current.x, current.y))
+        table.insert(self.path, sn.Vec2i(current.x, current.y))
         current.y = current.y + 1
       else
         current.y = current.y - 1
