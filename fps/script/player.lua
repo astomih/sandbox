@@ -282,9 +282,9 @@ local Player = {
     end,
     ---@param self Player
     draw2 = function(self)
-        self.hp_drawer:Draw()
-        self.stamina_max_drawer:Draw()
-        self.stamina_drawer:Draw()
+        sn.Graphics.Draw2D(self.hp_drawer)
+        sn.Graphics.Draw2D(self.stamina_max_drawer)
+        sn.Graphics.Draw2D(self.stamina_drawer)
     end,
     ---@param self Player
     render_text = function(self)

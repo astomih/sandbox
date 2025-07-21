@@ -100,7 +100,7 @@ local function effect()
         ---@param self effect
         draw = function(self)
             if self.is_playing then
-                self.drawer:Draw()
+                sn.Graphics.Draw3D(self.drawer)
             end
         end,
         ---@param self effect

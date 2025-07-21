@@ -26,7 +26,7 @@ function Update()
 end
 
 function Draw()
-    drawer_dead:Draw()
+    sn.Graphics.Draw2D(drawer_dead)
     scene_switcher:draw()
     GUI_MANAGER:draw()
 end

@@ -163,7 +163,9 @@ local enemy = function()
         end,
 
         ---@param self enemy
-        draw = function(self) self.drawer:Draw() end,
+        draw = function(self)
+            sn.Graphics.Draw3D(self.drawer)
+        end,
 
         ---@param self enemy
         ---@param player Player

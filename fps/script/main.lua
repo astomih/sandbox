@@ -47,8 +47,8 @@ function Update()
 end
 
 function Draw()
-	drawer_title:Draw()
-	drawer_press:Draw()
+	sn.Graphics.Draw2D(drawer_title)
+	sn.Graphics.Draw2D(drawer_press)
 	menu_object:draw()
 
 	scene_switcher:draw()

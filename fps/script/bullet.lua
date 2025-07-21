@@ -52,7 +52,7 @@ local function bullet(map_draw3ds)
         end,
         ---@param self bullet
         draw = function(self)
-            self.drawer:Draw()
+            sn.Graphics.Draw3D(self.drawer)
         end
     }
 

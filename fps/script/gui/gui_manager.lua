@@ -24,6 +24,7 @@ local function gui_manager()
         self:add(self.textures[i + new_size])
       end
     end,
+    ---@param self gui_manager
     ---@param drawer Draw2D
     add = function(self, drawer)
       self.drawers[self.current_drawer_pos].position = drawer.position
@@ -31,18 +32,21 @@ local function gui_manager()
       self.drawers[self.current_drawer_pos].material = drawer.material
       self.current_drawer_pos                        = self.current_drawer_pos + 1
     end,
+    ---@param self gui_manager
     ---@return Texture
     get_texture = function(self)
       self.current_texture_pos = self.current_texture_pos + 1
       return self.textures[self.current_texture_pos - 1]
     end,
+    ---@param self gui_manager
     update = function(self)
       self.current_drawer_pos = 1
       self.current_texture_pos = 1
     end,
+    ---@param self gui_manager
     draw = function(self)
       for i = 1, self.current_drawer_pos - 1 do
-        self.drawers[i]:Draw()
+        sn.Graphics.Draw2D(self.drawers[i])
       end
     end
   }

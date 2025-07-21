@@ -63,7 +63,7 @@ local scene_switcher = function()
       end
     end,
     draw = function(self)
-      self.drawer:Draw()
+      sn.Graphics.Draw2D(self.drawer)
     end,
     start = function(self, scene_name)
       self.is_launch = string.len(scene_name) == 0
