@@ -77,11 +77,12 @@ local function menu()
                     self.option = true
                 end
                 if button:show("Quit", sn.Vec2(0, -70), sn.Vec2(150, 50)) then
-                    sn.Scene.Change("")
+                    sn.Script.Load("")
                 end
             end
         end,
-        draw = function(self) end
+        draw = function(self)
+        end
     }
     return object
 end

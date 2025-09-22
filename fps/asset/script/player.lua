@@ -111,14 +111,14 @@ local Player = {
 
         if sn.Keyboard.IsDown(sn.Keyboard.LSHIFT) and is_move then
             speed = self.speed_max
-            self.stamina = self.stamina - self.stamina_run_cost * sn.Scene.DeltaTime()
+            self.stamina = self.stamina - self.stamina_run_cost * sn.Time.DeltaTime()
             if self.stamina <= 0.0 then
                 self.stamina = 0.0
                 speed = self.speed_min
             end
         else
             speed = self.speed_min
-            self.stamina = self.stamina + sn.Scene.DeltaTime() * self.stamina_recover_speed
+            self.stamina = self.stamina + sn.Time.DeltaTime() * self.stamina_recover_speed
             if self.stamina > self.stamina_max then
                 self.stamina = self.stamina_max
             end
@@ -127,10 +127,9 @@ local Player = {
         if sn.Mouse.IsPressed(sn.Mouse.LEFT) then
             self.bullet_flag = true
         end
-        self.bullet_timer = self.bullet_timer + sn.Scene.DeltaTime()
+        self.bullet_timer = self.bullet_timer + sn.Time.DeltaTime()
         if self.bullet_flag then
-            if self.bullet_timer >
-                self.bullet_time and (sn.Mouse.IsDown(sn.Mouse.LEFT)) then
+            if self.bullet_timer > self.bullet_time and (sn.Mouse.IsDown(sn.Mouse.LEFT)) then
                 local b = bullet(map_draw3ds)
 
                 local forward = sn.Vec3(math.sin(math.rad(self.drawer.rotation.z)),
@@ -157,7 +156,7 @@ local Player = {
             else
                 local t = sn.Periodic.Sin0_1(self.boost_time * 2.0, self.boost_timer) - 0.5
                 t = t * 0.2
-                self.boost_timer = self.boost_timer + sn.Scene.DeltaTime()
+                self.boost_timer = self.boost_timer + sn.Time.DeltaTime()
             end
         else
             if sn.Keyboard.IsPressed(sn.Keyboard.SPACE) and is_move then
@@ -171,13 +170,10 @@ local Player = {
                     efk.texture:FillColor(sn.Color(0.6, 0.6, 1.0, 1.0))
                     efk.impl = function(e)
                         for i = 1, e.max_particles do
-                            local t = sn.Scene.DeltaTime() * 2
-                            e.worlds[i].position.x =
-                                e.worlds[i].position.x + math.cos(i) * t
-                            e.worlds[i].position.y =
-                                e.worlds[i].position.y + math.sin(i) * t
-                            e.worlds[i].position.z =
-                                e.worlds[i].position.z + t
+                            local t = sn.Time.DeltaTime() * 2
+                            e.worlds[i].position.x = e.worlds[i].position.x + math.cos(i) * t
+                            e.worlds[i].position.y = e.worlds[i].position.y + math.sin(i) * t
+                            e.worlds[i].position.z = e.worlds[i].position.z + t
                         end
                     end
                     for j = 1, efk.max_particles do
@@ -208,10 +204,11 @@ local Player = {
         end
         for i, v in ipairs(self.efks) do
             v:update()
-            if v.is_stop then table.remove(self.efks, i) end
+            if v.is_stop then
+                table.remove(self.efks, i)
+            end
         end
-        local before_pos = sn.Vec3(self.drawer.position.x, self.drawer.position.y,
-            self.drawer.position.z)
+        local before_pos = sn.Vec3(self.drawer.position.x, self.drawer.position.y, self.drawer.position.z)
         local final_speed = 0.0
         if self.is_boost then
             final_speed = self.speed_max * self.boost
@@ -226,41 +223,39 @@ local Player = {
         local flag = false
         if input_vector.y ~= 0 then
             flag = true
-            self.drawer.position = self.drawer.position + sn.Vec3(
-                math.sin(math.rad(self.drawer.rotation.z)) * final_speed * sn.Scene.DeltaTime() * input_vector.y,
-                math.cos(math.rad(self.drawer.rotation.z)) *
-                final_speed *
-                sn.Scene.DeltaTime() * input_vector.y,
-                0)
+            self.drawer.position = self.drawer.position +
+                                       sn.Vec3(
+                    math.sin(math.rad(self.drawer.rotation.z)) * final_speed * sn.Time.DeltaTime() * input_vector.y,
+                    math.cos(math.rad(self.drawer.rotation.z)) * final_speed * sn.Time.DeltaTime() * input_vector.y, 0)
         end
         if input_vector.x ~= 0 then
             flag = true
-            self.drawer.position = self.drawer.position + sn.Vec3(
-                math.sin(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) *
-                final_speed *
-                sn.Scene.DeltaTime(),
-                math.cos(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) *
-                final_speed *
-                sn.Scene.DeltaTime(),
-                0)
+            self.drawer.position = self.drawer.position +
+                                       sn.Vec3(
+                    math.sin(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) * final_speed * sn.Time.DeltaTime(),
+                    math.cos(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) * final_speed * sn.Time.DeltaTime(),
+                    0)
         end
 
         if flag then
             -- xとy成分でそれぞれあたり判定を行う
             local dxy = sn.Vec2(self.drawer.position.x, self.drawer.position.y) - sn.Vec2(before_pos.x, before_pos.y)
             self.aabb:UpdateWorld(self.drawer.position - sn.Vec3(0, dxy.y, 0), self.drawer.scale, self.model:GetAABB())
-            if is_collision(self.drawer.position - sn.Vec3(0, dxy.y, 0), self.aabb, map, map_draw3ds, map_size_x, map_size_y) then
+            if is_collision(self.drawer.position - sn.Vec3(0, dxy.y, 0), self.aabb, map, map_draw3ds, map_size_x,
+                map_size_y) then
                 self.drawer.position.x = before_pos.x
             end
             self.aabb:UpdateWorld(self.drawer.position - sn.Vec3(dxy.x, 0, 0), self.drawer.scale, self.model:GetAABB())
-            if is_collision(self.drawer.position - sn.Vec3(dxy.x, 0, 0), self.aabb, map, map_draw3ds, map_size_x, map_size_y) then
+            if is_collision(self.drawer.position - sn.Vec3(dxy.x, 0, 0), self.aabb, map, map_draw3ds, map_size_x,
+                map_size_y) then
                 self.drawer.position.y = before_pos.y
             end
         end
         local pos = sn.Mouse.GetPositionOnScene()
-        self.drawer.rotation.y = self.drawer.rotation.y + math.sin(pos.y / sn.Scene.Half().y) * 32.0
+        local camera2DHalf = sn.Graphics.GetCamera2D():Half()
+        self.drawer.rotation.y = self.drawer.rotation.y + math.sin(pos.y / camera2DHalf.y) * 32.0
 
-        self.drawer.rotation.z = self.drawer.rotation.z + math.sin(pos.x / sn.Scene.Half().x) * 32.0
+        self.drawer.rotation.z = self.drawer.rotation.z + math.sin(pos.x / camera2DHalf.x) * 32.0
         sn.Mouse.SetPositionOnScene(sn.Vec2(0.0, 0.0))
         local s_ratio = self.stamina / self.stamina_max
         self.stamina_drawer.scale.x = s_ratio * 300
@@ -272,7 +267,7 @@ local Player = {
     end,
     ---@param self Player
     draw3 = function(self)
-        --self.drawer:draw()
+        -- self.drawer:draw()
         for i, v in ipairs(self.efks) do
             v:draw()
         end

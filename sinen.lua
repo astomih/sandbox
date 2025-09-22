@@ -1,5 +1,7 @@
 ---@diagnostic disable: duplicate-index, lowercase-global, unused-local
 sn = {
+    Scene = nil,
+
     ---@class Vec3
     ---@field x number
     ---@field y number
@@ -20,12 +22,16 @@ sn = {
     ---@param y number?
     ---@param z number?
     ---@return Vec3
-    Vec3 = function(x, y, z) return {} end,
+    Vec3 = function(x, y, z)
+        return {}
+    end,
 
     ---@param value number
     ---@return Vec3
     ---Initializes a Vec3 with the same value for x, y, z.
-    Vec3 = function(value) return {} end,
+    Vec3 = function(value)
+        return {}
+    end,
 
     ---@class Vec3i
     ---@field x integer
@@ -64,12 +70,16 @@ sn = {
     ---@param x number?
     ---@param y number?
     ---@return Vec2
-    Vec2 = function(x, y) return {} end,
+    Vec2 = function(x, y)
+        return {}
+    end,
 
     ---@param value number
     ---@return Vec2
     ---Initializes a Vec2 with the same value for x, y.
-    Vec2 = function(value) return {} end,
+    Vec2 = function(value)
+        return {}
+    end,
 
     ---@class Vec2i
     ---@field x integer
@@ -79,12 +89,16 @@ sn = {
     ---@param x integer?
     ---@param y integer?
     ---@return Vec2i
-    Vec2i = function(x, y) return {} end,
+    Vec2i = function(x, y)
+        return {}
+    end,
 
     ---@param value integer
     ---@return Vec2i
     ---Initializes a Vec2i with the same value for x, y.
-    Vec2i = function(value) return {} end,
+    Vec2i = function(value)
+        return {}
+    end,
 
     ---@class Texture
     ---@field FillColor fun(self: Texture, color: Color)
@@ -93,7 +107,9 @@ sn = {
     ---@field Load fun(self: Texture, path: string)
     ---@field Size fun(self: Texture): Vec2
     ---@return Texture
-    Texture = function() return {} end,
+    Texture = function()
+        return {}
+    end,
 
     ---@class Material
     ---Set Texture. index is 1-based, optional.
@@ -102,19 +118,25 @@ sn = {
     ---@field Clear fun(self: Material)
     ---@field GetTexture fun(self: Material, index: integer): Texture
     ---@return Material
-    Material = function() return {} end,
+    Material = function()
+        return {}
+    end,
 
     ---@class RenderTexture
     ---@field Create fun(self: RenderTexture, x: integer, y: integer)
     ---@return RenderTexture
-    RenderTexture = function() return {} end,
+    RenderTexture = function()
+        return {}
+    end,
 
     ---@class Music
     ---@field Load fun(self: Music, path: string)
     ---@field Play fun(self: Music)
     ---@field SetVolume fun(self: Music, volume: number)
     ---@return Music
-    Music = function() return {} end,
+    Music = function()
+        return {}
+    end,
 
     ---@class Sound
     ---@field Load fun(self: Sound, path: string)
@@ -124,7 +146,9 @@ sn = {
     ---@field SetListener fun(self: Sound, position: Vec3)
     ---@field SetPosition fun(self: Sound, position: Vec3)
     ---@return Sound
-    Sound = function() return {} end,
+    Sound = function()
+        return {}
+    end,
 
     ---@class Camera
     ---@field LookAt fun(self: Camera, position: Vec3, target: Vec3, up: Vec3)
@@ -134,7 +158,17 @@ sn = {
     ---@field GetTarget fun(self: Camera): Vec3
     ---@field GetUp fun(self: Camera): Vec3
     ---@field IsAABBInFrustum fun(self: Camera, aabb: AABB): boolean
-    Camera = function() end,
+    Camera = function()
+    end,
+
+    ---@class Camera2D
+    ---@field Resize fun(self: Camera2D, size: Vec2)
+    ---@field WindowRatio fun(self: Camera2D): Vec2
+    ---@field InvWindowRatio fun(self: Camera2D): Vec2
+    ---@field Size fun(self: Camera2D): Vec2
+    ---@field Half fun(self: Camera2D): Vec2
+    Camera2D = function()
+    end,
 
     ---@class Model
     ---@field GetAABB fun(self: Model): AABB
@@ -145,14 +179,18 @@ sn = {
     ---@field Play fun(self: Model, positon: number)
     ---@field Update fun(self: Model, delta: number)
     ---@return Model
-    Model = function() return {} end,
+    Model = function()
+        return {}
+    end,
 
     ---@class AABB
     ---@field min Vec3
     ---@field max Vec3
     ---@field UpdateWorld fun(self: AABB, position: Vec3, scale: Vec3, modelAABB: AABB)
     ---@return AABB
-    AABB = function() return {} end,
+    AABB = function()
+        return {}
+    end,
 
     ---@class Timer
     ---@field Start fun(self: Timer)
@@ -160,13 +198,16 @@ sn = {
     ---@field IsStarted fun(self: Timer): boolean
     ---@field SetTime fun(self: Timer, time: number)
     ---@field Check fun(self: Timer): boolean
-    Timer = function() end,
+    Timer = function()
+    end,
 
     ---@class UniformData
     ---@field Add fun(self: UniformData, value: any)
     ---@field Change fun(self: UniformData, index: integer, value: number)
     ---@return UniformData
-    UniformData = function() return {} end,
+    UniformData = function()
+        return {}
+    end,
 
     ---@class Shader
     ---@field LoadVertexShader fun(self: Shader, path: string, uniform_count: integer)
@@ -174,14 +215,18 @@ sn = {
     ---@field CompileAndLoadVertexShader fun(self: Shader, source: string, uniform_count: integer)
     ---@field CompileAndLoadFragmentShader fun(self: Shader, source: string, uniform_count: integer)
     ---@return Shader
-    Shader = function() return {} end,
+    Shader = function()
+        return {}
+    end,
 
     ---@class Font
     ---@field Load fun(self: Font, size: integer, path: string?): nil
     ---@field RenderText fun(self: Font, texture: Texture, text: string, color: Color): Texture
     ---@field Resize fun(self: Font, size: integer)
     ---@return Font
-    Font = function() return {} end,
+    Font = function()
+        return {}
+    end,
 
     ---@class Color
     ---@field r number
@@ -193,10 +238,14 @@ sn = {
     ---@param b number
     ---@param a number
     ---@return Color
-    Color = function(r, g, b, a) return {} end,
+    Color = function(r, g, b, a)
+        return {}
+    end,
 
     ---@return Color
-    Color = function() return {} end,
+    Color = function()
+        return {}
+    end,
 
     ---@class Draw2D
     ---@field scale Vec2
@@ -208,7 +257,9 @@ sn = {
     ---@field Clear fun(self: Draw2D)
     ---@param texture Texture?
     ---@return Draw2D
-    Draw2D = function(texture) return {} end,
+    Draw2D = function(texture)
+        return {}
+    end,
 
     ---@class Draw3D
     ---@field scale Vec3
@@ -222,7 +273,9 @@ sn = {
     ---@field Clear fun(self: Draw3D)
     ---@param texture Texture?
     ---@return Draw3D
-    Draw3D = function(texture) return {} end,
+    Draw3D = function(texture)
+        return {}
+    end,
 
     ---@class Grid
     ---@field At fun(self: Grid, x: integer, y: integer): integer
@@ -236,12 +289,14 @@ sn = {
     ---@param w integer
     ---@param h integer
     ---@return Grid
-    Grid = function(w, h) return {} end,
+    Grid = function(w, h)
+        return {}
+    end,
 
     ---@class BFSGrid
     ---@field Width fun(self: BFSGrid): integer
     ---@field Height fun(self: BFSGrid): integer
-    ---@field FindPath fun(self: BFSGrid, start: Vec2, end_: Vec2): any
+    ---@field FindPath fun(self: BFSGrid, start: Vec2i, end_: Vec2i): any
     ---@field Trace fun(self: BFSGrid): Vec2
     ---@field Traceable fun(self: BFSGrid): boolean
     ---@field Reset fun(self: BFSGrid)
@@ -256,7 +311,9 @@ sn = {
     ---@field SetFragmentShader fun(self: GraphicsPipeline2D, shader: Shader)
     ---@field Build fun(self: GraphicsPipeline2D)
     ---@return GraphicsPipeline2D
-    GraphicsPipeline2D = function() return {} end,
+    GraphicsPipeline2D = function()
+        return {}
+    end,
 
     ---@class GraphicsPipeline3D
     ---@field SetVertexShader fun(self: GraphicsPipeline3D, shader: Shader)
@@ -265,7 +322,51 @@ sn = {
     ---@field SetAnimation fun(self: GraphicsPipeline3D, anim: any)
     ---@field Build fun(self: GraphicsPipeline3D)
     ---@return GraphicsPipeline3D
-    GraphicsPipeline3D = function() return {} end,
+    GraphicsPipeline3D = function()
+        return {}
+    end,
+
+    ---@class Rect
+    ---@field x number
+    ---@field y number
+    ---@field width number
+    ---@field height number
+    ---@param x number?
+    ---@param y number?
+    ---@param width number?
+    ---@param height number?
+    ---@return Rect
+    Rect = function(x, y, width, height)
+        return {}
+    end,
+    ---@param position Vec2
+    ---@param size Vec2
+    ---@return Rect
+    Rect = function(position, size)
+        return {}
+    end,
+
+    ---@class Transform
+    ---@field position Vec3
+    ---@field rotation Vec3
+    ---@field scale Vec3
+    ---@return Transform
+    Transform = function()
+        return {}
+    end,
+
+    ---@class Collider
+    ---@field GetPosition fun(self: Collider): Vec3
+    ---@field GetVelocity fun(self: Collider): Vec3
+    ---@field SetLinearVelocity fun(self: Collider, velocity: Vec3)
+
+    ---Static class
+    ---@class Script
+    ---@field Load fun(path: string, basePath: string?)
+
+    ---Static class
+    ---@class FileSystem
+    ---@field EnumerateDirectory fun(path: string): table
 
     ---Static class
     ---@class Random
@@ -288,6 +389,14 @@ sn = {
     ---@class Graphics
     ---@field Draw2D fun(draw2D: Draw2D)
     ---@field Draw3D fun(draw3D: Draw3D)
+    ---@field DrawRect fun(rect: Rect, color: Color, angle: number?)
+    ---@field DrawImage fun(texture: Texture, rect: Rect, angle: number?)
+    ---@field DrawText fun(text: string, position: Vec2, color: Color?, fontSize: number?, angle: number?)
+    ---@field DrawModel fun(model: Model, transform: Transform, material: Material)
+    ---@field SetCamera fun(camera: Camera)
+    ---@field GetCamera fun(): Camera
+    ---@field SetCamera2D fun(camera: Camera2D)
+    ---@field GetCamera2D fun(): Camera2D
     ---@field GetClearColor fun(): Color
     ---@field SetClearColor fun(c: Color)
     ---@field BindPipeline2D fun(pipe: GraphicsPipeline2D)
@@ -295,22 +404,16 @@ sn = {
     ---@field BindPipeline3D fun(pipe: GraphicsPipeline3D)
     ---@field BindDefaultPipeline3D fun()
     ---@field SetUniformData fun(binding: integer, data: UniformData)
-    ---@field BeginTarget2D fun(rt: RenderTexture)
-    ---@field BeginTarget3D fun(rt: RenderTexture)
-    ---@field EndTarget fun(rt: RenderTexture, texture_ref: Texture)
+    ---@field SetRenderTarget fun(rt: RenderTexture)
+    ---@field Flush fun()
+    ---@field ReadbackTexture fun(rt: RenderTexture): Texture
     Graphics = {},
 
     ---Static class
-    ---@class Scene
-    ---@field GetCamera fun(): Camera
-    ---@field Size fun(): Vec2
-    ---@field Resize fun(size: Vec2)
-    ---@field Half fun(): Vec2
-    ---@field Ratio fun(): number
-    ---@field InvRatio fun(): number
-    ---@field DeltaTime fun(): number
-    ---@field Change fun(name: string)
-    Scene = {},
+    ---@class Physics
+    ---@field CreateBoxCollider fun(transform: Transform, isStatic: boolean): Collider
+    ---@field CreateSphereCollider fun(position: Vec3, radius: number, isStatic: boolean): Collider
+    ---@field AddCollider fun(collider: Collider, isActive: boolean)
 
     ---Static class
     ---@class Collision
@@ -447,6 +550,7 @@ sn = {
     ---@class Time
     ---@field Seconds fun(): number
     ---@field Milli fun(): integer
+    ---@field DeltaTime fun(): number
     Time = {},
 
     ---Static class

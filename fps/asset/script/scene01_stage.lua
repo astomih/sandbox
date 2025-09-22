@@ -55,9 +55,13 @@ for i = 1, COLLISION_SPACE_DIVISION + 2 do
         COLLISION_SPACE[i][j] = {}
     end
 end
-for i = 1, enemy_max_num do table.insert(enemies, enemy()) end
+for i = 1, enemy_max_num do
+    table.insert(enemies, enemy())
+end
 player:setup(map, map_size_x, map_size_y)
-for i, v in ipairs(enemies) do v:setup(map, map_size_x, map_size_y) end
+for i, v in ipairs(enemies) do
+    v:setup(map, map_size_x, map_size_y)
+end
 for y = 1, map_size_y do
     map_draw3ds[y] = {}
     for x = 1, map_size_x do
@@ -66,21 +70,16 @@ for y = 1, map_size_y do
         map_draw3ds[y][x].position.y = y * TILE_SIZE
         map_draw3ds[y][x].scale = sn.Vec3(TILE_SIZE / 2.0, TILE_SIZE / 2.0, 1)
         map_draw3ds[y][x].aabb = sn.AABB()
-        map_draw3ds[y][x].aabb.max =
-            map_draw3ds[y][x].position + map_draw3ds[y][x].scale
-        map_draw3ds[y][x].aabb.min =
-            map_draw3ds[y][x].position - map_draw3ds[y][x].scale
+        map_draw3ds[y][x].aabb.max = map_draw3ds[y][x].position + map_draw3ds[y][x].scale
+        map_draw3ds[y][x].aabb.min = map_draw3ds[y][x].position - map_draw3ds[y][x].scale
         if map:At(x, y) ~= MAP_CHIP.STAIR then
-            sprite:Add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation,
-                map_draw3ds[y][x].scale)
+            sprite:Add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation, map_draw3ds[y][x].scale)
         end
         if map:At(x, y) == MAP_CHIP.WALL then
             map_draw3ds[y][x].position.z = 0.5
             map_draw3ds[y][x].aabb = sn.AABB()
-            map_draw3ds[y][x].aabb.max =
-                map_draw3ds[y][x].position + map_draw3ds[y][x].scale
-            map_draw3ds[y][x].aabb.min =
-                map_draw3ds[y][x].position - map_draw3ds[y][x].scale
+            map_draw3ds[y][x].aabb.max = map_draw3ds[y][x].position + map_draw3ds[y][x].scale
+            map_draw3ds[y][x].aabb.min = map_draw3ds[y][x].position - map_draw3ds[y][x].scale
             map_z:Set(x, y, 0)
             map_draw3ds[y][x].position.z = map_z:At(x, y) / 10.0
             map_draw3ds[y][x].scale.z = 3
@@ -101,8 +100,7 @@ for y = 1, map_size_y do
         end
     end
 end
-score_font:RenderText(score_texture, "SCORE: " .. SCORE,
-    sn.Color(1, 1, 1, 1))
+score_font:RenderText(score_texture, "SCORE: " .. SCORE, sn.Color(1, 1, 1, 1))
 score_drawer.scale = score_texture:Size()
 camera_controller:setup(player)
 camera_controller:update()
@@ -111,21 +109,17 @@ scene_switcher:start("")
 
 equipment_menu:setup()
 
-
 ---@param map_draw3ds world[][]
 local FrustumCullingMapDraw = function(map_draw3ds)
     for y = 1, map_size_y do
         for x = 1, map_size_x do
-            if sn.Scene.GetCamera():IsAABBInFrustum(
-                    map_draw3ds[y][x].aabb) then
+            if sn.Graphics.GetCamera():IsAABBInFrustum(map_draw3ds[y][x].aabb) then
                 if map:At(x, y) == MAP_CHIP.WALL then
-                    box:Add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation,
-                        sn.Vec3(2))
+                    box:Add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation, sn.Vec3(2))
                 end
                 local p = map_draw3ds[y][x].position:Copy()
                 p.z = 0.0
-                sprite:Add(p, map_draw3ds[y][x].rotation,
-                    map_draw3ds[y][x].scale)
+                sprite:Add(p, map_draw3ds[y][x].rotation, map_draw3ds[y][x].scale)
             end
         end
     end
@@ -169,8 +163,7 @@ function Update()
     end
 
     sn.Mouse.SetRelative(true)
-    score_font:RenderText(score_texture, "SCORE: " .. SCORE,
-        sn.Color(1, 1, 1, 1))
+    score_font:RenderText(score_texture, "SCORE: " .. SCORE, sn.Color(1, 1, 1, 1))
     score_drawer.scale = score_texture:Size()
     collision_bullets(player.bullets)
     player:update(map, map_draw3ds, map_size_x, map_size_y)
@@ -215,12 +208,9 @@ collision_bullets = function(_bullets)
                 end
             end
         end
-        if map:At(math.floor(v.drawer
-                .position
-                .x / TILE_SIZE +
-                0.5), math.floor(v.drawer.position.y / TILE_SIZE + 0.5)) < MAP_CHIP_WALKABLE then
-            table.remove(player.bullets
-            , i)
+        if map:At(math.floor(v.drawer.position.x / TILE_SIZE + 0.5), math.floor(v.drawer.position.y / TILE_SIZE + 0.5)) <
+            MAP_CHIP_WALKABLE then
+            table.remove(player.bullets, i)
         end
     end
 end

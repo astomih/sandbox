@@ -1,5 +1,4 @@
 require("global")
-
 local texture_title = {}
 local texture_press = {}
 local font_title = {}
@@ -11,7 +10,7 @@ local menu_object = menu()
 local scene_switcher = require("scene_switcher")()
 local button = require("gui/button")()
 
-sn.Scene.Resize(sn.Vec2(1280, 720))
+sn.Graphics.GetCamera2D():Resize(sn.Vec2(1280, 720))
 SCORE = 0
 NOW_STAGE = 1
 menu_object:setup()
@@ -32,25 +31,26 @@ scene_switcher:setup()
 scene_switcher:start("")
 
 function Update()
-	GUI_MANAGER:update()
-	if scene_switcher.flag then
-		scene_switcher:update()
-		return
-	end
-	menu_object:update()
-	if menu_object.hide then
-		font_press:RenderText(texture_press, "CLICK TO START", sn.Color(1, 1, 1, sn.Periodic.Sin0_1(2.0, sn.Time.Seconds())))
-		if sn.Mouse.IsPressed(sn.Mouse.LEFT) then
-			scene_switcher:start("scene01_stage")
-		end
-	end
+    GUI_MANAGER:update()
+    if scene_switcher.flag then
+        scene_switcher:update()
+        return
+    end
+    menu_object:update()
+    if menu_object.hide then
+        font_press:RenderText(texture_press, "CLICK TO START",
+            sn.Color(1, 1, 1, sn.Periodic.Sin0_1(2.0, sn.Time.Seconds())))
+        if sn.Mouse.IsPressed(sn.Mouse.LEFT) then
+            scene_switcher:start("scene01_stage")
+        end
+    end
 end
 
 function Draw()
-	sn.Graphics.Draw2D(drawer_title)
-	sn.Graphics.Draw2D(drawer_press)
-	menu_object:draw()
+    sn.Graphics.Draw2D(drawer_title)
+    sn.Graphics.Draw2D(drawer_press)
+    menu_object:draw()
 
-	scene_switcher:draw()
-	GUI_MANAGER:draw()
+    scene_switcher:draw()
+    GUI_MANAGER:draw()
 end

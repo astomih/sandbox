@@ -88,18 +88,18 @@ local enemy = function()
         ---@param self enemy
         ---@param player Player
         update = function(self, player)
-            local dT = sn.Scene.DeltaTime()
+            local dT = sn.Time.DeltaTime()
             local length = (self.drawer.position - player.drawer.position):Length()
             if length > self.search_length then
                 return
             end
             self.aabb:UpdateWorld(self.drawer.position, self.drawer.scale, enemy_model:GetAABB())
             -- If there is a wall between the player and the enemy, the enemy will not move.
-            local start = sn.Vec2(
+            local start = sn.Vec2i(
                 self.drawer.position.x / TILE_SIZE,
                 self.drawer.position.y / TILE_SIZE
             )
-            local goal = sn.Vec2(
+            local goal = sn.Vec2i(
                 player.drawer.position.x / TILE_SIZE,
                 player.drawer.position.y / TILE_SIZE
             )
@@ -120,12 +120,13 @@ local enemy = function()
             end
             self.drawer.rotation = sn.Vec3(0, 0,
                 math.deg(
-                    -math.atan2(
+                    -math.atan(
                         player.drawer.position.x -
                         self.drawer.position.x,
                         player.drawer.position.y -
                         self.drawer.position.y)))
-            if self.bfs:FindPath(start, goal) then
+            local foundPath = self.bfs:FindPath(start, goal)
+            if foundPath then
                 local path = self.bfs:Trace()
                 path = self.bfs:Trace()
 
@@ -180,7 +181,7 @@ local enemy = function()
                     player:render_text()
                     self.is_collision_first = false
                 else
-                    self.collision_timer = self.collision_timer + sn.Scene.DeltaTime()
+                    self.collision_timer = self.collision_timer + sn.Time.DeltaTime()
                     if self.collision_timer > self.collision_time then
                         bombed:Play()
                         player.hp = player.hp - 10
