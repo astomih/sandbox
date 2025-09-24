@@ -49,7 +49,7 @@ local function effect()
         ---@param self effect
         setup = function(self)
             self.texture = sn.Texture()
-            self.texture:FillColor(self.start_color)
+            self.texture:fill(self.start_color)
             self.drawer = sn.Draw3D(self.texture)
             for i = 1, self.max_particles do
                 self.worlds[i] = world()
@@ -63,7 +63,7 @@ local function effect()
         end,
         ---@param self effect
         impl = function(self)
-            local dT = sn.Time.DeltaTime()
+            local dT = sn.Time.deltatime()
             for i = 1, self.max_particles do
                 self.worlds[i].position.x = self.worlds[i].position.x + math.cos(i) * dT
                 self.worlds[i].position.y = self.worlds[i].position.y + math.sin(i) * dT
@@ -73,8 +73,8 @@ local function effect()
         ---@param self effect
         update = function(self)
             --  if not self.is_playing then return end
-            self.drawer:Clear()
-            self.timer = self.timer + sn.Time.DeltaTime()
+            self.drawer:clear()
+            self.timer = self.timer + sn.Time.deltatime()
             if self.timer > self.start_lifetime then
                 self.timer = 0.0
                 for i = 1, self.max_particles do
@@ -90,14 +90,14 @@ local function effect()
             self:impl()
             if self.is_playing then
                 for i = 1, self.max_particles do
-                    self.drawer:Add(self.worlds[i].position, self.worlds[i].rotation, self.worlds[i].scale)
+                    self.drawer:add(self.worlds[i].position, self.worlds[i].rotation, self.worlds[i].scale)
                 end
             end
         end,
         ---@param self effect
         draw = function(self)
             if self.is_playing then
-                sn.Graphics.Draw3D(self.drawer)
+                sn.Graphics.draw3d(self.drawer)
             end
         end,
         ---@param self effect

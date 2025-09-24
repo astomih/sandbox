@@ -1,5 +1,5 @@
 local bombed = sn.Sound()
-bombed:Load("bombed.wav")
+bombed:load("bombed.wav")
 local r1 = 0
 local r2 = 0
 
@@ -7,18 +7,18 @@ local r2 = 0
 ---@param map_size_x number
 ---@param map_size_y number
 local function decide_pos(map, map_size_x, map_size_y)
-    r1 = sn.Random.GetRange(1, map_size_x)
-    r2 = sn.Random.GetRange(1, map_size_y)
-    return map:At(r1, r2) < MAP_CHIP_WALKABLE
+    r1 = sn.Random.get_range(1, map_size_x)
+    r2 = sn.Random.get_range(1, map_size_y)
+    return map:at(r1, r2) < MAP_CHIP_WALKABLE
 end
 
 local enemy_model = sn.Model()
-enemy_model:Load("enemy.glb")
-enemy_model:GetAABB().max.z = 10.0
-enemy_model:GetAABB().min.z = -10.0
+enemy_model:load("enemy.glb")
+enemy_model:get_aabb().max.z = 10.0
+enemy_model:get_aabb().min.z = -10.0
 
 local enemy_texture = sn.Texture()
-enemy_texture:FillColor(sn.Color(0, 1, 0, 1))
+enemy_texture:fill(sn.Color(0, 1, 0, 1))
 
 
 ---@class enemy
@@ -88,12 +88,12 @@ local enemy = function()
         ---@param self enemy
         ---@param player Player
         update = function(self, player)
-            local dT = sn.Time.DeltaTime()
-            local length = (self.drawer.position - player.drawer.position):Length()
+            local dT = sn.Time.deltatime()
+            local length = (self.drawer.position - player.drawer.position):length()
             if length > self.search_length then
                 return
             end
-            self.aabb:UpdateWorld(self.drawer.position, self.drawer.scale, enemy_model:GetAABB())
+            self.aabb:update_world(self.drawer.position, self.drawer.scale, enemy_model:get_aabb())
             -- If there is a wall between the player and the enemy, the enemy will not move.
             local start = sn.Vec2i(
                 self.drawer.position.x / TILE_SIZE,
@@ -109,12 +109,12 @@ local enemy = function()
             local min_y = math.min(start.y, goal.y)
             local max_y = math.max(start.y, goal.y)
             for i = min_x, max_x do
-                if self.map:At(i, start.y) < MAP_CHIP_WALKABLE then
+                if self.map:at(i, start.y) < MAP_CHIP_WALKABLE then
                     return
                 end
             end
             for i = min_y, max_y do
-                if self.map:At(start.x, i) < MAP_CHIP_WALKABLE then
+                if self.map:at(start.x, i) < MAP_CHIP_WALKABLE then
                     return
                 end
             end
@@ -125,10 +125,10 @@ local enemy = function()
                         self.drawer.position.x,
                         player.drawer.position.y -
                         self.drawer.position.y)))
-            local foundPath = self.bfs:FindPath(start, goal)
+            local foundPath = self.bfs:find_path(start, goal)
             if foundPath then
-                local path = self.bfs:Trace()
-                path = self.bfs:Trace()
+                local path = self.bfs:trace()
+                path = self.bfs:trace()
 
                 local dir = sn.Vec2(
                     path.x * TILE_SIZE - self.drawer.position.x,
@@ -160,20 +160,20 @@ local enemy = function()
                     self.drawer.position.y + dT * self.speed *
                     self.get_forward_z(self.drawer).y
             end
-            self.bfs:Reset()
+            self.bfs:reset()
         end,
 
         ---@param self enemy
         draw = function(self)
-            sn.Graphics.Draw3D(self.drawer)
+            sn.Graphics.draw3d(self.drawer)
         end,
 
         ---@param self enemy
         ---@param player Player
         player_collision = function(self, player)
-            if sn.Collision.AABBvsAABB(self.aabb, player.aabb) then
+            if sn.Collision.aabb_vs_aabb(self.aabb, player.aabb) then
                 if self.is_collision_first then
-                    bombed:Play()
+                    bombed:play()
                     player.hp = player.hp - 1
                     if player.hp <= 0 then
                         player.hp = 0
@@ -181,9 +181,9 @@ local enemy = function()
                     player:render_text()
                     self.is_collision_first = false
                 else
-                    self.collision_timer = self.collision_timer + sn.Time.DeltaTime()
+                    self.collision_timer = self.collision_timer + sn.Time.deltatime()
                     if self.collision_timer > self.collision_time then
-                        bombed:Play()
+                        bombed:play()
                         player.hp = player.hp - 10
                         if player.hp <= 0 then
                             player.hp = 0

@@ -13,7 +13,7 @@ local function menu()
         setup = function(self)
         end,
         update = function(self)
-            local is_esc = sn.Keyboard.IsPressed(sn.Keyboard.ESCAPE)
+            local is_esc = sn.Keyboard.is_pressed(sn.Keyboard.ESCAPE)
             if self.hide_next then
                 self.hide = not self.hide
                 self.hide_next = false
@@ -28,27 +28,27 @@ local function menu()
                 local offset = scroll.pos.y * 1.5
                 local start = 100
                 if button:show("1120x630", sn.Vec2(0, start + offset), sn.Vec2(200, 50)) then
-                    sn.Window.Resize(sn.Vec2(1120, 630))
+                    sn.Window.resize(sn.Vec2(1120, 630))
                 end
                 start = start - 100
                 if button:show("1280x720", sn.Vec2(0, start + offset), sn.Vec2(200, 50)) then
-                    sn.Window.Resize(sn.Vec2(1280, 720))
+                    sn.Window.resize(sn.Vec2(1280, 720))
                 end
                 start = start - 100
                 if button:show("1440x810", sn.Vec2(0, start + offset), sn.Vec2(200, 50)) then
-                    sn.Window.Resize(sn.Vec2(1440, 810))
+                    sn.Window.resize(sn.Vec2(1440, 810))
                 end
                 start = start - 100
                 if button:show("1600x900", sn.Vec2(0, start + offset), sn.Vec2(200, 50)) then
-                    sn.Window.Resize(sn.Vec2(1600, 900))
+                    sn.Window.resize(sn.Vec2(1600, 900))
                 end
                 start = start - 100
                 if button:show("1760x990", sn.Vec2(0, start + offset), sn.Vec2(200, 50)) then
-                    sn.Window.Resize(sn.Vec2(1760, 990))
+                    sn.Window.resize(sn.Vec2(1760, 990))
                 end
                 start = start - 100
                 if button:show("1920x1080", sn.Vec2(0, start + offset), sn.Vec2(200, 50)) then
-                    sn.Window.Resize(sn.Vec2(1920, 1080))
+                    sn.Window.resize(sn.Vec2(1920, 1080))
                 end
                 if button:show("Back", sn.Vec2(0, -300), sn.Vec2(200, 50)) or is_esc then
                     self.option_Window_size = false
@@ -67,8 +67,8 @@ local function menu()
                 return
             end
             if not self.hide then
-                sn.Mouse.HideCursor(false)
-                sn.Mouse.SetRelative(false)
+                sn.Mouse.hide_cursor(false)
+                sn.Mouse.set_relative(false)
                 text:show("Menu", sn.Vec2(0, 200), 50)
                 if button:show("Resume", sn.Vec2(0, 70), sn.Vec2(150, 50)) or is_esc then
                     self.hide_next = true
@@ -77,7 +77,7 @@ local function menu()
                     self.option = true
                 end
                 if button:show("Quit", sn.Vec2(0, -70), sn.Vec2(150, 50)) then
-                    sn.Script.Load("")
+                    sn.Script.load("")
                 end
             end
         end,

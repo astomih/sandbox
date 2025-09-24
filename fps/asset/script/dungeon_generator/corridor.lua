@@ -31,13 +31,13 @@ function Corridor:connect(grid, rooms, floor_id)
 
     local current = sn.Vec2i(left.x, left.y)
     while current.x < right.x do
-      grid:Set(current.x, current.y, floor_id)
+      grid:set(current.x, current.y, floor_id)
       table.insert(self.path, sn.Vec2i(current.x, current.y))
       current.x = current.x + 1
     end
 
     while current.y ~= right.y do
-      grid:Set(current.x, current.y, floor_id)
+      grid:set(current.x, current.y, floor_id)
       if current.y < right.y then
         table.insert(self.path, sn.Vec2i(current.x, current.y))
         current.y = current.y + 1

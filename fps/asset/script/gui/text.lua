@@ -6,14 +6,14 @@ local function text()
     show = function(self, text, pos, scale)
       local texture = GUI_MANAGER:get_texture()
       self.drawer = sn.Draw2D(texture)
-      self.font:RenderText(texture, text, self.color)
-      self.drawer.scale = texture:Size()
+      self.font:render_text(texture, text, self.color)
+      self.drawer.scale = texture:size()
       self.drawer.position = pos
       GUI_MANAGER:add(self.drawer)
     end,
   }
   object.font = sn.Font()
-  object.font:Load(32, DEFAULT_FONT_NAME)
+  object.font:load(32, DEFAULT_FONT_NAME)
   object.drawer = sn.Draw2D(sn.Texture())
 
   return object

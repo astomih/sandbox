@@ -10,27 +10,27 @@ local menu_object = menu()
 local scene_switcher = require("scene_switcher")()
 local button = require("gui/button")()
 
-sn.Graphics.GetCamera2D():Resize(sn.Vec2(1280, 720))
+sn.Graphics.get_camera2d():resize(sn.Vec2(1280, 720))
 SCORE = 0
 NOW_STAGE = 1
 menu_object:setup()
 texture_title = sn.Texture()
 drawer_title = sn.Draw2D(texture_title)
 font_title = sn.Font()
-font_title:Load(64, DEFAULT_FONT_NAME)
-font_title:RenderText(texture_title, "SINEN DEMO", sn.Color(1, 1, 1, 0.9))
-drawer_title.scale = texture_title:Size()
+font_title:load(64, DEFAULT_FONT_NAME)
+font_title:render_text(texture_title, "SINEN DEMO", sn.Color(1, 1, 1, 0.9))
+drawer_title.scale = texture_title:size()
 texture_press = sn.Texture()
 drawer_press = sn.Draw2D(texture_press)
 font_press = sn.Font()
-font_press:Load(32, DEFAULT_FONT_NAME)
-font_press:RenderText(texture_press, "CLICK TO START", sn.Color(1, 1, 1, 0.9))
-drawer_press.scale = texture_press:Size()
+font_press:load(32, DEFAULT_FONT_NAME)
+font_press:render_text(texture_press, "CLICK TO START", sn.Color(1, 1, 1, 0.9))
+drawer_press.scale = texture_press:size()
 drawer_press.position = sn.Vec2(0, -drawer_title.scale.y * 3.0)
 scene_switcher:setup()
 scene_switcher:start("")
 
-function Update()
+function update()
     GUI_MANAGER:update()
     if scene_switcher.flag then
         scene_switcher:update()
@@ -38,17 +38,17 @@ function Update()
     end
     menu_object:update()
     if menu_object.hide then
-        font_press:RenderText(texture_press, "CLICK TO START",
-            sn.Color(1, 1, 1, sn.Periodic.Sin0_1(2.0, sn.Time.Seconds())))
-        if sn.Mouse.IsPressed(sn.Mouse.LEFT) then
+        font_press:render_text(texture_press, "CLICK TO START",
+            sn.Color(1, 1, 1, sn.Periodic.sin0_1(2.0, sn.Time.seconds())))
+        if sn.Mouse.is_pressed(sn.Mouse.LEFT) then
             scene_switcher:start("scene01_stage")
         end
     end
 end
 
-function Draw()
-    sn.Graphics.Draw2D(drawer_title)
-    sn.Graphics.Draw2D(drawer_press)
+function draw()
+    sn.Graphics.draw2d(drawer_title)
+    sn.Graphics.draw2d(drawer_press)
     menu_object:draw()
 
     scene_switcher:draw()

@@ -11,7 +11,7 @@ local function equipment_menu()
     setup = function(self)
       -- setup menu
       self.ui_panel_texture = sn.Texture()
-      self.ui_panel_texture:FillColor(sn.Color(1, 1, 1, 0.5))
+      self.ui_panel_texture:fill(sn.Color(1, 1, 1, 0.5))
       self.ui_panel = sn.Draw2D(self.ui_panel_texture)
       self.ui_panel.scale = sn.Vec2(1120, 630)
       button.fg_color = sn.Color(0, 0, 0, 0.9)
@@ -23,14 +23,14 @@ local function equipment_menu()
       end
     end,
     update = function(self)
-      if sn.Keyboard.IsPressed(sn.Keyboard.E) then
+      if sn.Keyboard.is_pressed(sn.Keyboard.E) then
         self.hide = not self.hide
       end
       if self.hide then
         return false
       end
-      sn.Mouse.HideCursor(false)
-      sn.Mouse.SetRelative(false)
+      sn.Mouse.hide_cursor(false)
+      sn.Mouse.set_relative(false)
       GUI_MANAGER:add(self.ui_panel)
       button.fg_color = sn.Color(1, 1, 1, 0.9)
       button.bg_color = sn.Color(1, 0, 0, 1.0)
@@ -59,7 +59,7 @@ local function equipment_menu()
         scroll:show(sn.Vec2(200, 0), sn.Vec2(20, 200))
         local offset = scroll.pos.y
         local tex = sn.Texture()
-        tex:FillColor(sn.Color(0, 0, 0, 0.5))
+        tex:fill(sn.Color(0, 0, 0, 0.5))
         image:show(tex, sn.Vec2(0, 0), sn.Vec2(250, 500))
         if button:show("a", sn.Vec2(0, 100 + offset), sn.Vec2(200, 50)) then
           -- do

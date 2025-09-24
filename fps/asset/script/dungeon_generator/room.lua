@@ -16,7 +16,7 @@ end
 function Room:fill(grid, floor_id)
   for dy = 0, self.size.y - 1 do
     for dx = 0, self.size.x - 1 do
-      grid:Set(self.position.x + dx,
+      grid:set(self.position.x + dx,
         self.position.y + dy,
         floor_id)
     end

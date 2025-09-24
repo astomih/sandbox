@@ -1,7 +1,7 @@
 local m = sn.Model()
 local sound = sn.Sound()
-sound:Load("shot.wav")
-sound:SetVolume(0.3)
+sound:load("shot.wav")
+sound:set_volume(0.3)
 
 ---@class bullet
 ---@field speed number
@@ -30,29 +30,29 @@ local function bullet(map_draw3ds)
         setup = function(self, owner, forward)
             self.aabb = sn.AABB()
             self.texture = sn.Texture()
-            self.texture:FillColor(sn.Color(1.0, 1.0, 1.0, 1.0))
+            self.texture:fill(sn.Color(1.0, 1.0, 1.0, 1.0))
             self.drawer = sn.Draw3D(self.texture)
             self.drawer.position = sn.Vec3(owner.position.x, owner.position.y,
                 owner.position.z)
             self.drawer.rotation = owner.rotation
             self.drawer.scale = sn.Vec3(0.2, 0.2, 0.2)
             self.forward = forward
-            sound:Play()
+            sound:play()
         end,
         ---@param self bullet
         update = function(self)
-            local dT = sn.Time.DeltaTime()
+            local dT = sn.Time.deltatime()
             self.aabb.max = self.drawer.position + (
-                self.drawer.scale * m:GetAABB().max)
+                self.drawer.scale * m:get_aabb().max)
             self.aabb.min = self.drawer.position + (
-                self.drawer.scale * m:GetAABB().min)
+                self.drawer.scale * m:get_aabb().min)
             self.current_time = self.current_time + dT
             self.drawer.position = self.drawer.position +
                 (self.forward * sn.Vec3(self.speed, self.speed, self.speed) * sn.Vec3(dT))
         end,
         ---@param self bullet
         draw = function(self)
-            sn.Graphics.Draw3D(self.drawer)
+            sn.Graphics.draw3d(self.drawer)
         end
     }
 

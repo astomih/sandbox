@@ -39,8 +39,8 @@ local function camera_controller()
       self.target.x = math.sin(math.rad(self.player.drawer.rotation.z))
       self.target.y = math.cos(math.rad(self.player.drawer.rotation.z))
       self.target.z = math.sin(math.rad(self.player.drawer.rotation.y))
-      self.position = self.player.drawer.position:Copy()
-      sn.Graphics.GetCamera():LookAt(self.position, self.position + self.target, sn.Vec3(0, 0, 1))
+      self.position = self.player.drawer.position:copy()
+      sn.Graphics.get_camera():lookat(self.position, self.position + self.target, sn.Vec3(0, 0, 1))
     end
   }
   return object

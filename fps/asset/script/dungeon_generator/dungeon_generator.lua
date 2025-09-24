@@ -19,10 +19,10 @@ end
 ---@param stair  integer
 local function dungeon_generator(grid, floor, wall,
                                  player, key, stair)
-  if grid:Width() < 3 or grid:Height() < 3 then return end
+  if grid:width() < 3 or grid:height() < 3 then return end
 
   local recreate   = false
-  local grid_size  = sn.Vec2i(grid:Width(), grid:Height())
+  local grid_size  = sn.Vec2i(grid:width(), grid:height())
 
   local min_rooms  = 5
   local max_rooms  = 14
@@ -41,9 +41,9 @@ local function dungeon_generator(grid, floor, wall,
   end
 
   -- init
-  for y = 1, grid:Height() do
-    for x = 1, grid:Width() do
-      grid:Set(x, y, wall)
+  for y = 1, grid:height() do
+    for x = 1, grid:width() do
+      grid:set(x, y, wall)
     end
   end
 
@@ -62,9 +62,9 @@ local function dungeon_generator(grid, floor, wall,
   local key_pos    = center_of(rooms[math.floor(#rooms / 2) + 1])
   local player_pos = center_of(rooms[1])
 
-  grid:Set(stairs_pos.x, stairs_pos.y, stair)
-  grid:Set(key_pos.x, key_pos.y, key)
-  grid:Set(player_pos.x, player_pos.y, player)
+  grid:set(stairs_pos.x, stairs_pos.y, stair)
+  grid:set(key_pos.x, key_pos.y, key)
+  grid:set(player_pos.x, player_pos.y, player)
 
   ------------------------------------------------------------
   -- corridor
@@ -77,7 +77,7 @@ local function dungeon_generator(grid, floor, wall,
   ------------------------------------------------------------
   local function reachable(a, b)
     local bfs = sn.BFSGrid(grid)
-    return bfs:FindPath(a, b)
+    return bfs:find_path(a, b)
   end
 
   if not (reachable(player_pos, key_pos)
