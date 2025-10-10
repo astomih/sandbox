@@ -1,7 +1,7 @@
-local button = require("gui/button")()
-local text = require("gui/text")()
-local scroll = require("gui/scroll")()
-local image = require("gui/image")()
+local button = require("button")()
+local text = require("text")()
+local scroll = require("scroll")()
+local image = require("image")()
 local function equipment_menu()
   local object = {
     hide = true,

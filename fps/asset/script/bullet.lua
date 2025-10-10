@@ -41,7 +41,7 @@ local function bullet(map_draw3ds)
         end,
         ---@param self bullet
         update = function(self)
-            local dT = sn.Time.deltatime()
+            local dT = sn.Time.delta()
             self.aabb.max = self.drawer.position + (
                 self.drawer.scale * m:get_aabb().max)
             self.aabb.min = self.drawer.position + (

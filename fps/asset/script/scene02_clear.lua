@@ -21,7 +21,7 @@ function update()
         return
     end
     if sn.Mouse.is_pressed(sn.Mouse.LEFT) then
-        scene_switcher:start("scene01_stage")
+        scene_switcher:start("main")
     end
 end
 

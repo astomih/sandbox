@@ -111,14 +111,14 @@ local Player = {
 
         if sn.Keyboard.is_down(sn.Keyboard.LSHIFT) and is_move then
             speed = self.speed_max
-            self.stamina = self.stamina - self.stamina_run_cost * sn.Time.deltatime()
+            self.stamina = self.stamina - self.stamina_run_cost * sn.Time.delta()
             if self.stamina <= 0.0 then
                 self.stamina = 0.0
                 speed = self.speed_min
             end
         else
             speed = self.speed_min
-            self.stamina = self.stamina + sn.Time.deltatime() * self.stamina_recover_speed
+            self.stamina = self.stamina + sn.Time.delta() * self.stamina_recover_speed
             if self.stamina > self.stamina_max then
                 self.stamina = self.stamina_max
             end
@@ -127,7 +127,7 @@ local Player = {
         if sn.Mouse.is_pressed(sn.Mouse.LEFT) then
             self.bullet_flag = true
         end
-        self.bullet_timer = self.bullet_timer + sn.Time.deltatime()
+        self.bullet_timer = self.bullet_timer + sn.Time.delta()
         if self.bullet_flag then
             if self.bullet_timer > self.bullet_time and (sn.Mouse.is_down(sn.Mouse.LEFT)) then
                 local b = bullet(map_draw3ds)
@@ -156,7 +156,7 @@ local Player = {
             else
                 local t = sn.Periodic.sin0_1(self.boost_time * 2.0, self.boost_timer) - 0.5
                 t = t * 0.2
-                self.boost_timer = self.boost_timer + sn.Time.deltatime()
+                self.boost_timer = self.boost_timer + sn.Time.delta()
             end
         else
             if sn.Keyboard.is_pressed(sn.Keyboard.SPACE) and is_move then
@@ -170,7 +170,7 @@ local Player = {
                     efk.texture:fill(sn.Color(0.6, 0.6, 1.0, 1.0))
                     efk.impl = function(e)
                         for i = 1, e.max_particles do
-                            local t = sn.Time.deltatime() * 2
+                            local t = sn.Time.delta() * 2
                             e.worlds[i].position.x = e.worlds[i].position.x + math.cos(i) * t
                             e.worlds[i].position.y = e.worlds[i].position.y + math.sin(i) * t
                             e.worlds[i].position.z = e.worlds[i].position.z + t
@@ -225,15 +225,15 @@ local Player = {
             flag = true
             self.drawer.position = self.drawer.position +
                 sn.Vec3(
-                    math.sin(math.rad(self.drawer.rotation.z)) * final_speed * sn.Time.deltatime() * input_vector.y,
-                    math.cos(math.rad(self.drawer.rotation.z)) * final_speed * sn.Time.deltatime() * input_vector.y, 0)
+                    math.sin(math.rad(self.drawer.rotation.z)) * final_speed * sn.Time.delta() * input_vector.y,
+                    math.cos(math.rad(self.drawer.rotation.z)) * final_speed * sn.Time.delta() * input_vector.y, 0)
         end
         if input_vector.x ~= 0 then
             flag = true
             self.drawer.position = self.drawer.position +
                 sn.Vec3(
-                    math.sin(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) * final_speed * sn.Time.deltatime(),
-                    math.cos(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) * final_speed * sn.Time.deltatime(),
+                    math.sin(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) * final_speed * sn.Time.delta(),
+                    math.cos(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) * final_speed * sn.Time.delta(),
                     0)
         end
 

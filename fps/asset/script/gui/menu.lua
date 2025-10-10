@@ -1,9 +1,9 @@
-local button = require("gui/button")()
+local button = require("button")()
 button.fg_color = sn.Color(0, 0, 0, 0.9)
 button.bg_color = sn.Color(1, 1, 1, 1)
-local text = require("gui/text")()
-local image = require("gui/image")()
-local scroll = require("gui/scroll")()
+local text = require("text")()
+local image = require("image")()
+local scroll = require("scroll")()
 local function menu()
     local object = {
         hide = true,

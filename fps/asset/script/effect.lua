@@ -63,7 +63,7 @@ local function effect()
         end,
         ---@param self effect
         impl = function(self)
-            local dT = sn.Time.deltatime()
+            local dT = sn.Time.delta()
             for i = 1, self.max_particles do
                 self.worlds[i].position.x = self.worlds[i].position.x + math.cos(i) * dT
                 self.worlds[i].position.y = self.worlds[i].position.y + math.sin(i) * dT
@@ -74,7 +74,7 @@ local function effect()
         update = function(self)
             --  if not self.is_playing then return end
             self.drawer:clear()
-            self.timer = self.timer + sn.Time.deltatime()
+            self.timer = self.timer + sn.Time.delta()
             if self.timer > self.start_lifetime then
                 self.timer = 0.0
                 for i = 1, self.max_particles do

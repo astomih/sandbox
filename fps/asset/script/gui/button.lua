@@ -1,4 +1,4 @@
-require("gui/global")
+require("global")
 
 local button = function()
   local _       = {}

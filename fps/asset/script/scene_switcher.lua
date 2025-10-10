@@ -31,7 +31,7 @@ local scene_switcher = function()
             if self.flag then
                 if not self.is_launch then
                     if self.timer < self.time then
-                        self.timer = self.timer + sn.Time.deltatime()
+                        self.timer = self.timer + sn.Time.delta()
                         local t = self.timer * (1.0 / self.time)
                         if t > 1.0 then
                             t = 1.0
@@ -48,7 +48,7 @@ local scene_switcher = function()
                     end
                 else
                     if self.timer > 0.0 then
-                        self.timer = self.timer - sn.Time.deltatime()
+                        self.timer = self.timer - sn.Time.delta()
                         local t = self.timer * (1.0 / self.time)
                         if t < 0.0 then
                             t = 0.0

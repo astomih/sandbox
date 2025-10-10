@@ -173,7 +173,7 @@ sn = {
 
     ---@class UniformData
     ---@field add fun(self: UniformData, value: any)
-    ---@field change fun(self: UniformData, index: integer, value: number)
+    ---@field change fun(self: UniformData,index: integer,  value: number)
     ---@return UniformData
     UniformData = function() return {} end,
 
@@ -225,7 +225,6 @@ sn = {
     ---@field rotation Vec3
     ---@field material Material
     ---@field model Model
-    ---@field isDrawDepth boolean
     ---@field add fun(self: Draw3D, positon: Vec3, rotation: Vec3, scale: Vec3)
     ---@field at fun(self: Draw3D, x: number, y: number, z: number)
     ---@field clear fun(self: Draw3D)
@@ -353,7 +352,7 @@ sn = {
     ---@field set_uniform_data fun(binding: integer, data: UniformData)
     ---@field set_render_target fun(rt: RenderTexture)
     ---@field flush fun()
-    ---@field readback_texture fun(rt: RenderTexture): Texture
+    ---@field readback_texture fun(rt: RenderTexture, out: Texture): Texture
     Graphics = {},
 
     ---Static class
@@ -498,7 +497,7 @@ sn = {
     ---@class Time
     ---@field seconds fun(): number
     ---@field milli fun(): integer
-    ---@field deltatime fun(): number
+    ---@field delta fun(): number
     Time = {},
 
     ---Static class

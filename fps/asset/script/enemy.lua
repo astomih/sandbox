@@ -88,7 +88,7 @@ local enemy = function()
         ---@param self enemy
         ---@param player Player
         update = function(self, player)
-            local dT = sn.Time.deltatime()
+            local dT = sn.Time.delta()
             local length = (self.drawer.position - player.drawer.position):length()
             if length > self.search_length then
                 return
@@ -181,7 +181,7 @@ local enemy = function()
                     player:render_text()
                     self.is_collision_first = false
                 else
-                    self.collision_timer = self.collision_timer + sn.Time.deltatime()
+                    self.collision_timer = self.collision_timer + sn.Time.delta()
                     if self.collision_timer > self.collision_time then
                         bombed:play()
                         player.hp = player.hp - 10

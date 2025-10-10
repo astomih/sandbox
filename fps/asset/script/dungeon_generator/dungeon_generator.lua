@@ -1,8 +1,8 @@
 --------------------------------------------------------------------
 -- dungeon_generator.lua
 --------------------------------------------------------------------
-local Room     = require("dungeon_generator/room")
-local Corridor = require("dungeon_generator/corridor")
+local Room     = require("room")
+local Corridor = require("corridor")
 
 local function center_of(room)
   local p = room:get_position()

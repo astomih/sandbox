@@ -45,7 +45,6 @@ box = sn.Draw3D(DEFAULT_TEXTURE)
 local sprite_model = sn.Model()
 sprite_model:load_sprite()
 sprite = sn.Draw3D(tile)
-sprite.isDrawDepth = false
 sprite.model = sprite_model
 stair = sn.Draw3D(DEFAULT_TEXTURE)
 stair.model = sprite_model
