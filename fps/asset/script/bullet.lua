@@ -1,7 +1,7 @@
-local m = sn.Model()
-local sound = sn.Sound()
+local m = sn.Model.new()
+local sound = sn.Sound.new()
 sound:load("shot.wav")
-sound:set_volume(0.3)
+sound:setVolume(0.3)
 
 ---@class bullet
 ---@field speed number
@@ -19,7 +19,7 @@ local function bullet(map_draw3ds)
     local object = {
         speed = 40,
         drawer = {},
-        forward = sn.Vec3(0, 0, 0),
+        forward = sn.Vec3.new(0, 0, 0),
         life_time = 0.25,
         current_time = 0,
         aabb = {},
@@ -28,14 +28,14 @@ local function bullet(map_draw3ds)
         ---@param owner Draw3D
         ---@param forward Vec3
         setup = function(self, owner, forward)
-            self.aabb = sn.AABB()
-            self.texture = sn.Texture()
-            self.texture:fill(sn.Color(1.0, 1.0, 1.0, 1.0))
-            self.drawer = sn.Draw3D(self.texture)
-            self.drawer.position = sn.Vec3(owner.position.x, owner.position.y,
+            self.aabb = sn.AABB.new()
+            self.texture = sn.Texture.new()
+            self.texture:fill(sn.Color.new(1.0, 1.0, 1.0, 1.0))
+            self.drawer = sn.Draw3D.new(self.texture)
+            self.drawer.position = sn.Vec3.new(owner.position.x, owner.position.y,
                 owner.position.z)
             self.drawer.rotation = owner.rotation
-            self.drawer.scale = sn.Vec3(0.2, 0.2, 0.2)
+            self.drawer.scale = sn.Vec3.new(0.2, 0.2, 0.2)
             self.forward = forward
             sound:play()
         end,
@@ -43,16 +43,16 @@ local function bullet(map_draw3ds)
         update = function(self)
             local dT = sn.Time.delta()
             self.aabb.max = self.drawer.position + (
-                self.drawer.scale * m:get_aabb().max)
+                self.drawer.scale * m:getAABB().max)
             self.aabb.min = self.drawer.position + (
-                self.drawer.scale * m:get_aabb().min)
+                self.drawer.scale * m:getAABB().min)
             self.current_time = self.current_time + dT
             self.drawer.position = self.drawer.position +
-                (self.forward * sn.Vec3(self.speed, self.speed, self.speed) * sn.Vec3(dT))
+                (self.forward * sn.Vec3.new(self.speed, self.speed, self.speed) * sn.Vec3.new(dT))
         end,
         ---@param self bullet
         draw = function(self)
-            sn.Graphics.draw3d(self.drawer)
+            sn.Graphics.draw3D(self.drawer)
         end
     }
 

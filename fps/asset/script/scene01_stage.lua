@@ -7,8 +7,8 @@ local world = require "world"
 local effect = require "effect"
 local map_size_x = 64
 local map_size_y = 64
-local map = sn.Grid(map_size_x, map_size_y)
-local map_z = sn.Grid(map_size_x, map_size_y)
+local map = sn.Grid.new(map_size_x, map_size_y)
+local map_z = sn.Grid.new(map_size_x, map_size_y)
 -- draw object
 local map_draw3ds = {}
 local box = {}
@@ -16,14 +16,14 @@ local sprite = {}
 local menu = {}
 local stair = {}
 -- assets
-local tile = sn.Texture()
-tile:fill(sn.Color(0.416, 0.204, 0.153, 1))
+local tile = sn.Texture.new()
+tile:fill(sn.Color.new(0.416, 0.204, 0.153, 1))
 
-local score_font = sn.Font()
-local score_texture = sn.Texture()
-local score_drawer = sn.Draw2D(score_texture)
-local sprite_model = sn.Model()
-sprite_model:load_sprite()
+local score_font = sn.Font.new()
+local score_texture = sn.Texture.new()
+local score_drawer = sn.Draw2D.new(score_texture)
+local sprite_model = sn.Model.new()
+sprite_model:loadSprite()
 
 local menu = require("gui/menu")
 local menu_object = menu()
@@ -35,18 +35,18 @@ local camera_controller = require("camera_controller")()
 
 score_font:load(64, DEFAULT_FONT_NAME)
 menu_object:setup()
-DEFAULT_TEXTURE = sn.Texture()
-DEFAULT_TEXTURE:fill(sn.Color(1, 1, 1, 1))
+DEFAULT_TEXTURE = sn.Texture.new()
+DEFAULT_TEXTURE:fill(sn.Color.new(1, 1, 1, 1))
 map:fill(0)
 map_z:fill(0)
 dungeon_generator(map, 0, -1, 4, 3, 2)
 
-box = sn.Draw3D(DEFAULT_TEXTURE)
-local sprite_model = sn.Model()
-sprite_model:load_sprite()
-sprite = sn.Draw3D(tile)
+box = sn.Draw3D.new(DEFAULT_TEXTURE)
+local sprite_model = sn.Model.new()
+sprite_model:loadSprite()
+sprite = sn.Draw3D.new(tile)
 sprite.model = sprite_model
-stair = sn.Draw3D(DEFAULT_TEXTURE)
+stair = sn.Draw3D.new(DEFAULT_TEXTURE)
 stair.model = sprite_model
 for i = 1, COLLISION_SPACE_DIVISION + 2 do
     COLLISION_SPACE[i] = {}
@@ -67,8 +67,8 @@ for y = 1, map_size_y do
         map_draw3ds[y][x] = world()
         map_draw3ds[y][x].position.x = x * TILE_SIZE
         map_draw3ds[y][x].position.y = y * TILE_SIZE
-        map_draw3ds[y][x].scale = sn.Vec3(TILE_SIZE / 2.0, TILE_SIZE / 2.0, 1)
-        map_draw3ds[y][x].aabb = sn.AABB()
+        map_draw3ds[y][x].scale = sn.Vec3.new(TILE_SIZE / 2.0, TILE_SIZE / 2.0, 1)
+        map_draw3ds[y][x].aabb = sn.AABB.new()
         map_draw3ds[y][x].aabb.max = map_draw3ds[y][x].position + map_draw3ds[y][x].scale
         map_draw3ds[y][x].aabb.min = map_draw3ds[y][x].position - map_draw3ds[y][x].scale
         if map:at(x, y) ~= MAP_CHIP.STAIR then
@@ -76,7 +76,7 @@ for y = 1, map_size_y do
         end
         if map:at(x, y) == MAP_CHIP.WALL then
             map_draw3ds[y][x].position.z = 0.5
-            map_draw3ds[y][x].aabb = sn.AABB()
+            map_draw3ds[y][x].aabb = sn.AABB.new()
             map_draw3ds[y][x].aabb.max = map_draw3ds[y][x].position + map_draw3ds[y][x].scale
             map_draw3ds[y][x].aabb.min = map_draw3ds[y][x].position - map_draw3ds[y][x].scale
             map_z:set(x, y, 0)
@@ -99,7 +99,7 @@ for y = 1, map_size_y do
         end
     end
 end
-score_font:render_text(score_texture, "SCORE: " .. SCORE, sn.Color(1, 1, 1, 1))
+score_font:renderText(score_texture, "SCORE: " .. SCORE, sn.Color.new(1, 1, 1, 1))
 score_drawer.scale = score_texture:size()
 camera_controller:setup(player)
 camera_controller:update()
@@ -112,9 +112,9 @@ equipment_menu:setup()
 local FrustumCullingMapDraw = function(map_draw3ds)
     for y = 1, map_size_y do
         for x = 1, map_size_x do
-            if sn.Graphics.get_camera():is_aabb_in_frustum(map_draw3ds[y][x].aabb) then
+            if sn.Graphics.getCamera():isAABBInFrustum(map_draw3ds[y][x].aabb) then
                 if map:at(x, y) == MAP_CHIP.WALL then
-                    box:add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation, sn.Vec3(2))
+                    box:add(map_draw3ds[y][x].position, map_draw3ds[y][x].rotation, sn.Vec3.new(2))
                 end
                 local p = map_draw3ds[y][x].position:copy()
                 p.z = 0.0
@@ -124,19 +124,23 @@ local FrustumCullingMapDraw = function(map_draw3ds)
     end
 end
 function draw()
+    sn.Graphics.bindPipeline(sn.BuiltinPipelines.get3D())
     player:draw3()
     for i, v in ipairs(enemies) do
         v:draw()
     end
+    sn.Graphics.bindPipeline(sn.BuiltinPipelines.get3DInstanced())
     box:clear()
     sprite:clear()
     FrustumCullingMapDraw(map_draw3ds)
-    sn.Graphics.draw3d(box)
-    sn.Graphics.draw3d(sprite)
-    sn.Graphics.draw3d(stair)
+    sn.Graphics.draw3D(box)
+    sn.Graphics.draw3D(sprite)
+    sn.Graphics.bindPipeline(sn.BuiltinPipelines.get3D())
+    sn.Graphics.draw3D(stair)
 
+    sn.Graphics.bindPipeline(sn.BuiltinPipelines.get2D())
     player:draw2()
-    sn.Graphics.draw2d(score_drawer)
+    sn.Graphics.draw2D(score_drawer)
     equipment_menu:draw()
     menu_object:draw()
     scene_switcher:draw()
@@ -148,7 +152,7 @@ end
 
 function update()
     GUI_MANAGER:update()
-    score_drawer.position = sn.Vec2(-300, 300)
+    score_drawer.position = sn.Vec2.new(-300, 300)
     if scene_switcher.flag then
         scene_switcher:update()
         return
@@ -161,8 +165,8 @@ function update()
         return
     end
 
-    sn.Mouse.set_relative(true)
-    score_font:render_text(score_texture, "SCORE: " .. SCORE, sn.Color(1, 1, 1, 1))
+    sn.Mouse.setRelative(true)
+    score_font:renderText(score_texture, "SCORE: " .. SCORE, sn.Color.new(1, 1, 1, 1))
     score_drawer.scale = score_texture:size()
     collision_bullets(player.bullets)
     player:update(map, map_draw3ds, map_size_x, map_size_y)
@@ -186,10 +190,10 @@ end
 collision_bullets = function(_bullets)
     for i, v in ipairs(_bullets) do
         for j, w in ipairs(enemies) do
-            if sn.Collision.aabb_vs_aabb(v.aabb, w.aabb) then
+            if sn.Collision.AABBvsAABB(v.aabb, w.aabb) then
                 local efk = effect()
                 efk:setup()
-                efk.texture:fill(sn.Color(1, 0.2, 0.2, 1))
+                efk.texture:fill(sn.Color.new(1, 0.2, 0.2, 1))
                 for k = 1, efk.max_particles do
                     efk.worlds[k].position = w.drawer.position:copy()
                 end

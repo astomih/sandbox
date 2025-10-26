@@ -1,4 +1,4 @@
-local bombed = sn.Sound()
+local bombed = sn.Sound.new()
 bombed:load("bombed.wav")
 local r1 = 0
 local r2 = 0
@@ -7,18 +7,18 @@ local r2 = 0
 ---@param map_size_x number
 ---@param map_size_y number
 local function decide_pos(map, map_size_x, map_size_y)
-    r1 = sn.Random.get_range(1, map_size_x)
-    r2 = sn.Random.get_range(1, map_size_y)
+    r1 = sn.Random.getRange(1, map_size_x)
+    r2 = sn.Random.getRange(1, map_size_y)
     return map:at(r1, r2) < MAP_CHIP_WALKABLE
 end
 
-local enemy_model = sn.Model()
+local enemy_model = sn.Model.new()
 enemy_model:load("enemy.glb")
-enemy_model:get_aabb().max.z = 10.0
-enemy_model:get_aabb().min.z = -10.0
+enemy_model:getAABB().max.z = 10.0
+enemy_model:getAABB().min.z = -10.0
 
-local enemy_texture = sn.Texture()
-enemy_texture:fill(sn.Color(0, 1, 0, 1))
+local enemy_texture = sn.Texture.new()
+enemy_texture:fill(sn.Color.new(0, 1, 0, 1))
 
 
 ---@class enemy
@@ -51,7 +51,7 @@ local enemy = function()
         collision_timer = {},
         map = {},
         get_forward_z = function(drawer)
-            return sn.Vec2(-math.sin(math.rad(drawer.rotation.z)),
+            return sn.Vec2.new(-math.sin(math.rad(drawer.rotation.z)),
                 math.cos(math.rad(-drawer.rotation.z)))
         end,
         bfs = {},
@@ -70,17 +70,17 @@ local enemy = function()
         ---@param map_size_x number
         ---@param map_size_y number
         setup = function(self, _map, map_size_x, map_size_y)
-            self.bfs = sn.BFSGrid(_map)
-            self.drawer = sn.Draw3D(enemy_texture)
+            self.bfs = sn.BFSGrid.new(_map)
+            self.drawer = sn.Draw3D.new(enemy_texture)
             self.drawer.model = enemy_model
-            self.drawer.scale = sn.Vec3(0.5, 0.5, 0.5)
-            self.aabb = sn.AABB()
+            self.drawer.scale = sn.Vec3.new(0.5, 0.5, 0.5)
+            self.aabb = sn.AABB.new()
             self.map = _map
             r1 = 0
             r2 = 0
             while decide_pos(_map, map_size_x, map_size_y) == true do
             end
-            self.drawer.position = sn.Vec3(r1 * TILE_SIZE, r2 * TILE_SIZE, 0.5)
+            self.drawer.position = sn.Vec3.new(r1 * TILE_SIZE, r2 * TILE_SIZE, 0.5)
             self.is_collision_first = true
             self.collision_time = 1.0
             self.collision_timer = 0.0
@@ -93,13 +93,13 @@ local enemy = function()
             if length > self.search_length then
                 return
             end
-            self.aabb:update_world(self.drawer.position, self.drawer.scale, enemy_model:get_aabb())
+            self.aabb:updateWorld(self.drawer.position, self.drawer.scale, enemy_model:getAABB())
             -- If there is a wall between the player and the enemy, the enemy will not move.
-            local start = sn.Vec2i(
+            local start = sn.Vec2i.new(
                 self.drawer.position.x / TILE_SIZE,
                 self.drawer.position.y / TILE_SIZE
             )
-            local goal = sn.Vec2i(
+            local goal = sn.Vec2i.new(
                 player.drawer.position.x / TILE_SIZE,
                 player.drawer.position.y / TILE_SIZE
             )
@@ -118,19 +118,19 @@ local enemy = function()
                     return
                 end
             end
-            self.drawer.rotation = sn.Vec3(0, 0,
+            self.drawer.rotation = sn.Vec3.new(0, 0,
                 math.deg(
                     -math.atan(
                         player.drawer.position.x -
                         self.drawer.position.x,
                         player.drawer.position.y -
                         self.drawer.position.y)))
-            local foundPath = self.bfs:find_path(start, goal)
+            local foundPath = self.bfs:findPath(start, goal)
             if foundPath then
                 local path = self.bfs:trace()
                 path = self.bfs:trace()
 
-                local dir = sn.Vec2(
+                local dir = sn.Vec2.new(
                     path.x * TILE_SIZE - self.drawer.position.x,
                     path.y * TILE_SIZE - self.drawer.position.y)
                 if dir.x < -1 then
@@ -165,13 +165,13 @@ local enemy = function()
 
         ---@param self enemy
         draw = function(self)
-            sn.Graphics.draw3d(self.drawer)
+            sn.Graphics.draw3D(self.drawer)
         end,
 
         ---@param self enemy
         ---@param player Player
         player_collision = function(self, player)
-            if sn.Collision.aabb_vs_aabb(self.aabb, player.aabb) then
+            if sn.Collision.AABBvsAABB(self.aabb, player.aabb) then
                 if self.is_collision_first then
                     bombed:play()
                     player.hp = player.hp - 1

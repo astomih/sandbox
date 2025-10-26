@@ -14,16 +14,16 @@
 ---@return scene_switcher
 local scene_switcher = function()
     return {
-        texture = sn.Texture(),
-        color = sn.Color(0, 0, 0, 0.0),
-        drawer = sn.Draw2D(),
+        texture = sn.Texture.new(),
+        color = sn.Color.new(0, 0, 0, 0.0),
+        drawer = sn.Draw2D.new(),
         time = 0.25,
         timer = 0.0,
         flag = false,
         scene_name = "",
         is_launch = false,
         setup = function(self)
-            self.drawer.material:set_texture(self.texture)
+            self.drawer.material:setTexture(self.texture)
             self.drawer.scale = sn.Window:size()
         end,
         update = function(self)
@@ -39,10 +39,10 @@ local scene_switcher = function()
                         if t < 0.0 then
                             t = 1.0
                         end
-                        self.texture:fill(sn.Color(self.color.r, self.color.g, self.color.b, t))
+                        self.texture:fill(sn.Color.new(self.color.r, self.color.g, self.color.b, t))
                     else
                         self.timer = 0
-                        self.texture:fill(sn.Color(self.color.r, self.color.g, self.color.b, 1.0))
+                        self.texture:fill(sn.Color.new(self.color.r, self.color.g, self.color.b, 1.0))
                         self.flag = false
                         sn.Script.load(self.scene_name)
                     end
@@ -53,26 +53,26 @@ local scene_switcher = function()
                         if t < 0.0 then
                             t = 0.0
                         end
-                        self.texture:fill(sn.Color(self.color.r, self.color.g, self.color.b, t))
+                        self.texture:fill(sn.Color.new(self.color.r, self.color.g, self.color.b, t))
                     else
                         self.flag = false
-                        self.texture:fill(sn.Color(self.color.r, self.color.g, self.color.b, 0.0))
+                        self.texture:fill(sn.Color.new(self.color.r, self.color.g, self.color.b, 0.0))
                         self.timer = 0.0
                     end
                 end
             end
         end,
         draw = function(self)
-            sn.Graphics.draw2d(self.drawer)
+            sn.Graphics.draw2D(self.drawer)
         end,
         start = function(self, scene_name)
             self.is_launch = string.len(scene_name) == 0
             if self.is_launch then
-                self.texture:fill(sn.Color(self.color.r, self.color.g, self.color.b, 1.0))
+                self.texture:fill(sn.Color.new(self.color.r, self.color.g, self.color.b, 1.0))
                 self.flag = false
                 self.timer = self.time
             else
-                self.texture:fill(sn.Color(self.color.r, self.color.g, self.color.b, 0.0))
+                self.texture:fill(sn.Color.new(self.color.r, self.color.g, self.color.b, 0.0))
                 self.timer = 0.0
             end
             self.scene_name = scene_name

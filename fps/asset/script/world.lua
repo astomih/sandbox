@@ -6,10 +6,10 @@
 ---@return world
 local function world()
     local object = {
-        position = sn.Vec3(0),
-        rotation = sn.Vec3(0),
-        scale = sn.Vec3(1),
-        aabb = sn.AABB()
+        position = sn.Vec3.new(0),
+        rotation = sn.Vec3.new(0),
+        scale = sn.Vec3.new(1),
+        aabb = sn.AABB.new()
     }
     return object
 end

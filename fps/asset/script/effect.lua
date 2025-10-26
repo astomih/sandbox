@@ -1,5 +1,5 @@
 local world = require "world"
-local tree = sn.Model()
+local tree = sn.Model.new()
 
 ---@class effect
 ---@field duration number
@@ -35,7 +35,7 @@ local function effect()
         start_speed = 5.0,
         start_size = 1.0,
         start_rotation = 0.0,
-        start_color = sn.Color(1, 1, 1, 1),
+        start_color = sn.Color.new(1, 1, 1, 1),
         gravity_multiplier = 0.0,
         inherit_velocity = 0.0,
         play_on_awake = false,
@@ -48,14 +48,14 @@ local function effect()
         timer = 0.0,
         ---@param self effect
         setup = function(self)
-            self.texture = sn.Texture()
+            self.texture = sn.Texture.new()
             self.texture:fill(self.start_color)
-            self.drawer = sn.Draw3D(self.texture)
+            self.drawer = sn.Draw3D.new(self.texture)
             for i = 1, self.max_particles do
                 self.worlds[i] = world()
-                self.worlds[i].position = sn.Vec3(0, 0, 0)
-                self.worlds[i].rotation = sn.Vec3(0, 0, 0)
-                self.worlds[i].scale = sn.Vec3(0.1, 0.1, 0.1)
+                self.worlds[i].position = sn.Vec3.new(0, 0, 0)
+                self.worlds[i].rotation = sn.Vec3.new(0, 0, 0)
+                self.worlds[i].scale = sn.Vec3.new(0.1, 0.1, 0.1)
             end
             if self.play_on_awake then
                 self.is_playing = true
@@ -78,9 +78,9 @@ local function effect()
             if self.timer > self.start_lifetime then
                 self.timer = 0.0
                 for i = 1, self.max_particles do
-                    self.worlds[i].position = sn.Vec3(0, 0, 0)
-                    self.worlds[i].rotation = sn.Vec3(0, 0, 0)
-                    self.worlds[i].scale = sn.Vec3(1, 1, 1)
+                    self.worlds[i].position = sn.Vec3.new(0, 0, 0)
+                    self.worlds[i].rotation = sn.Vec3.new(0, 0, 0)
+                    self.worlds[i].scale = sn.Vec3.new(1, 1, 1)
                 end
                 if not self.looping then
                     self.is_playing = false
@@ -97,7 +97,7 @@ local function effect()
         ---@param self effect
         draw = function(self)
             if self.is_playing then
-                sn.Graphics.draw3d(self.drawer)
+                sn.Graphics.draw3D(self.drawer)
             end
         end,
         ---@param self effect
