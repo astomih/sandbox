@@ -1,22 +1,22 @@
 ---@class Player
----@field drawer Draw3D
----@field model Model
+---@field drawer sn.Draw3D
+---@field model sn.Model
 ---@field bullets bullet[]
 ---@field hp number
 ---@field hp_max number
----@field hp_drawer Draw2D
----@field hp_font Font
----@field hp_font_texture Texture
+---@field hp_drawer sn.Draw2D
+---@field hp_font sn.Font
+---@field hp_font_texture sn.Texture
 ---@field stamina number
 ---@field stamina_max number
 ---@field stamina_recover_speed number
 ---@field stamina_boost_cost number
 ---@field stamina_run_cost number
----@field stamina_texture Texture
----@field stamina_drawer Draw2D
----@field stamina_max_texture Texture
----@field stamina_max_drawer Draw2D
----@field aabb AABB
+---@field stamina_texture sn.Texture
+---@field stamina_drawer sn.Draw2D
+---@field stamina_max_texture sn.Texture
+---@field stamina_max_drawer sn.Draw2D
+---@field aabb sn.AABB
 ---@field bullet_time number
 ---@field bullet_timer number
 ---@field bullet_flag boolean
@@ -26,7 +26,7 @@
 ---@field boost_time number
 ---@field boost_timer number
 ---@field boost_mag number
----@field boost_sound Sound
+---@field boost_sound sn.Sound
 ---@field is_boost boolean
 ---@field speed_min number
 ---@field speed_max number
@@ -38,6 +38,9 @@
 ---@field update fun(self: Player, map: Grid, map_draw3ds: world[][], map_size_x: number, map_size_y: number)
 ---@field draw3 fun(self: Player)
 ---@field draw2 fun(self: Player)
+---@field scopePos Vec2
 ---@field render_text fun(self: Player)
 ---@return Player
-function Player() return {} end
+function Player()
+    return {}
+end

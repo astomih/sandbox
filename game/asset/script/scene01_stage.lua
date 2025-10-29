@@ -123,7 +123,7 @@ local FrustumCullingMapDraw = function(map_draw3ds)
         end
     end
 end
-function draw()
+function Draw()
     sn.Graphics.bindPipeline(sn.BuiltinPipelines.get3D())
     player:draw3()
     for i, v in ipairs(enemies) do
@@ -150,7 +150,7 @@ end
 local function collision_bullets(_bullets)
 end
 
-function update()
+function Update()
     GUI_MANAGER:update()
     score_drawer.position = sn.Vec2.new(-300, 300)
     if scene_switcher.flag then

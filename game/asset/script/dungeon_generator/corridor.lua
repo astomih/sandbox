@@ -1,33 +1,31 @@
 --------------------------------------------------------------------
 -- corridor.lua
 --------------------------------------------------------------------
-local Corridor = {}
+local Corridor = {
+    path = {}
+}
 Corridor.__index = Corridor
 
 function Corridor:new()
-    return setmetatable({ path = {} }, Corridor)
+    return setmetatable({}, Corridor)
 end
 
-function Corridor:get_path() return self.path end
+function Corridor:get_path()
+    return self.path
+end
 
----@param grid Grid
+---@param grid sn.Grid
 function Corridor:connect(grid, rooms, floor_id)
     for i = 1, #rooms - 1 do
-        local a       = rooms[i]
-        local b       = rooms[i + 1]
-        local posA    = a:get_position()
-        local sizeA   = a:get_size()
-        local posB    = b:get_position()
-        local sizeB   = b:get_size()
+        local a = rooms[i]
+        local b = rooms[i + 1]
+        local posA = a:get_position()
+        local sizeA = a:get_size()
+        local posB = b:get_position()
+        local sizeB = b:get_size()
 
-        local left    = sn.Vec2i.new(
-            posA.x + sizeA.x - 1,
-            math.random(posA.y, posA.y + sizeA.y - 1)
-        )
-        local right   = sn.Vec2i.new(
-            posB.x,
-            math.random(posB.y, posB.y + sizeB.y - 1)
-        )
+        local left = sn.Vec2i.new(posA.x + sizeA.x - 1, math.random(posA.y, posA.y + sizeA.y - 1))
+        local right = sn.Vec2i.new(posB.x, math.random(posB.y, posB.y + sizeB.y - 1))
 
         local current = sn.Vec2i.new(left.x, left.y)
         while current.x < right.x do

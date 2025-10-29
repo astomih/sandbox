@@ -30,7 +30,7 @@ drawer_press.position = sn.Vec2.new(0, -drawer_title.scale.y * 3.0)
 scene_switcher:setup()
 scene_switcher:start("")
 
-function update()
+function Update()
     GUI_MANAGER:update()
     if scene_switcher.flag then
         scene_switcher:update()
@@ -46,7 +46,7 @@ function update()
     end
 end
 
-function draw()
+function Draw()
     sn.Graphics.draw2D(drawer_title)
     sn.Graphics.draw2D(drawer_press)
     menu_object:draw()

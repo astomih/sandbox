@@ -14,7 +14,7 @@ scene_switcher:start("")
 sn.Mouse.hideCursor(false)
 sn.Mouse.setRelative(false)
 
-function update()
+function Update()
     GUI_MANAGER:update()
     if scene_switcher.flag then
         scene_switcher:update()
@@ -25,7 +25,7 @@ function update()
     end
 end
 
-function draw()
+function Draw()
     sn.Graphics.draw2D(drawer_dead)
     scene_switcher:draw()
     GUI_MANAGER:draw()

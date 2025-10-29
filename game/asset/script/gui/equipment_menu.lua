@@ -58,7 +58,7 @@ local function equipment_menu()
             if self.is_list then
                 scroll:show(sn.Vec2.new(200, 0), sn.Vec2.new(20, 200))
                 local offset = scroll.pos.y
-                local tex = sn.Texture()
+                local tex = sn.Texture.new()
                 tex:fill(sn.Color.new(0, 0, 0, 0.5))
                 image:show(tex, sn.Vec2.new(0, 0), sn.Vec2.new(250, 500))
                 if button:show("a", sn.Vec2.new(0, 100 + offset), sn.Vec2.new(200, 50)) then
