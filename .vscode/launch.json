@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "C++ Launch",
       "program": "sinen",
-      "cwd": "${workspaceFolder}/fps",
+      "cwd": "${workspaceFolder}/game",
     }
   ]
 }

@@ -1,10 +1,11 @@
-local player = require "player"
-local enemy = require "enemy"
-local dungeon_generator = require "dungeon_generator/dungeon_generator"
+local Player = require("player")
+local player = Player.new()
+local Enemy = require("Enemy")
+local dungeonGenerator = require "dungeon_generator/dungeon_generator"
 local enemies = {}
 local enemy_max_num = 100
 local world = require "world"
-local effect = require "effect"
+local Effect = require "effect"
 local map_size_x = 64
 local map_size_y = 64
 local map = sn.Grid.new(map_size_x, map_size_y)
@@ -39,7 +40,7 @@ DEFAULT_TEXTURE = sn.Texture.new()
 DEFAULT_TEXTURE:fill(sn.Color.new(1, 1, 1, 1))
 map:fill(0)
 map_z:fill(0)
-dungeon_generator(map, 0, -1, 4, 3, 2)
+dungeonGenerator(map, 0, -1, 4, 3, 2)
 
 box = sn.Draw3D.new(DEFAULT_TEXTURE)
 local sprite_model = sn.Model.new()
@@ -55,7 +56,7 @@ for i = 1, COLLISION_SPACE_DIVISION + 2 do
     end
 end
 for i = 1, enemy_max_num do
-    table.insert(enemies, enemy())
+    table.insert(enemies, Enemy.new())
 end
 player:setup(map, map_size_x, map_size_y)
 for i, v in ipairs(enemies) do
@@ -186,12 +187,12 @@ function Update()
     camera_controller:update()
 end
 
----@param _bullets bullet[]
+---@param _bullets Bullet[]
 collision_bullets = function(_bullets)
     for i, v in ipairs(_bullets) do
         for j, w in ipairs(enemies) do
             if sn.Collision.AABBvsAABB(v.aabb, w.aabb) then
-                local efk = effect()
+                local efk = Effect.new()
                 efk:setup()
                 efk.texture:fill(sn.Color.new(1, 0.2, 0.2, 1))
                 for k = 1, efk.max_particles do

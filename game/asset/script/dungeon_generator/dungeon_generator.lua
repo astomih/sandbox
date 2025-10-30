@@ -4,7 +4,7 @@
 local Room = require("room")
 local Corridor = require("corridor")
 
-local function center_of(room)
+local function centerOf(room)
     local p = room:get_position()
     local s = room:get_size()
     return sn.Vec2i.new(p.x + math.floor(s.x / 2), p.y + math.floor(s.y / 2))
@@ -16,7 +16,7 @@ end
 ---@param player integer
 ---@param key    integer
 ---@param stair  integer
-local function dungeon_generator(grid, floor, wall, player, key, stair)
+local function dungeonGenerator(grid, floor, wall, player, key, stair)
     if grid:width() < 3 or grid:height() < 3 then
         return
     end
@@ -60,9 +60,9 @@ local function dungeon_generator(grid, floor, wall, player, key, stair)
     ------------------------------------------------------------
     -- Key / Stairs / Player placing
     ------------------------------------------------------------
-    local stairs_pos = center_of(rooms[#rooms])
-    local key_pos = center_of(rooms[math.floor(#rooms / 2) + 1])
-    local player_pos = center_of(rooms[1])
+    local stairs_pos = centerOf(rooms[#rooms])
+    local key_pos = centerOf(rooms[math.floor(#rooms / 2) + 1])
+    local player_pos = centerOf(rooms[1])
 
     grid:set(stairs_pos.x, stairs_pos.y, stair)
     grid:set(key_pos.x, key_pos.y, key)
@@ -87,8 +87,8 @@ local function dungeon_generator(grid, floor, wall, player, key, stair)
     end
 
     if recreate then
-        dungeon_generator(grid, floor, wall, player, key, stair)
+        dungeonGenerator(grid, floor, wall, player, key, stair)
     end
 end
 
-return dungeon_generator
+return dungeonGenerator
