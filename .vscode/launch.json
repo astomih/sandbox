@@ -7,7 +7,7 @@
     {
       "type": "cppvsdbg",
       "request": "launch",
-      "name": "C++ Launch",
+      "name": "game",
       "program": "sinen",
       "cwd": "${workspaceFolder}/game",
     }
