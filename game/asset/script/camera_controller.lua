@@ -33,20 +33,11 @@ local function camera_controller()
         end,
         ---@param self camera_controller
         update = function(self)
-            -- self.target.x = math.sin(math.rad(self.player.drawer.rotation.z))
-            -- self.target.y = math.cos(math.rad(self.player.drawer.rotation.z))
-            -- self.target.z = math.sin(math.rad(self.player.drawer.rotation.y))
-            -- self.position = self.player.drawer.position:copy()
-            -- sn.Graphics.getCamera():lookat(self.position, self.position + self.target, sn.Vec3.new(0, 0, 1))
-
-            local t = sn.Time.delta() * self.track_speed
-            local dx = (self.player.drawer.position.x - self.target.x)
-            self.position.x = self.position.x + dx * t
-            local dy = (self.player.drawer.position.y - self.target.y)
-            self.position.y = self.position.y + dy * t
-            self.target = sn.Vec3.new(self.position.x, self.position.y + self.py, self.position.z - self.pz)
-            sn.Graphics.getCamera():perspective(60, 16.0 / 9.0, 0.1, 100.0)
-            sn.Graphics.getCamera():lookat(self.position, self.target, sn.Vec3.new(0, 0, 1))
+            self.target.x = math.sin(math.rad(self.player.drawer.rotation.z))
+            self.target.y = math.cos(math.rad(self.player.drawer.rotation.z))
+            self.target.z = math.sin(math.rad(self.player.drawer.rotation.y))
+            self.position = self.player.drawer.position:copy()
+            sn.Graphics.getCamera():lookat(self.position, self.position + self.target, sn.Vec3.new(0, 0, 1))
         end
     }
     return object

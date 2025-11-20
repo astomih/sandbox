@@ -182,12 +182,12 @@ Player.update = function(self, map, map_draw3ds, map_size_x, map_size_y)
         if self.bullet_timer > self.bullet_time and (sn.Mouse.isDown(sn.Mouse.LEFT)) then
             local b = Bullet.new()
 
-            local forward = sn.Vec3.new(math.cos(math.rad(self.rotationZ)), math.sin(math.rad(self.rotationZ)),
-                math.sin(math.rad(self.drawer.rotation.y)))
-            local cross = sn.Vec3.new(math.cos(math.rad(self.rotationZ + 90)), math.sin(math.rad(self.rotationZ + 90)),
-                -0.5)
+            local forward = sn.Vec3.new(math.sin(math.rad(self.drawer.rotation.z)),
+                math.cos(math.rad(self.drawer.rotation.z)), math.sin(math.rad(self.drawer.rotation.y)))
+            local cross = sn.Vec3.new(math.sin(math.rad(self.drawer.rotation.z + 90)),
+                math.cos(math.rad(self.drawer.rotation.z + 90)), -0.5)
 
-            local rot = forward * sn.Vec3.new(1000) - cross
+            local rot = forward * sn.Vec3.new(1000, 1000, 1000) - cross
             rot = rot:normalize()
             b:setup(self.drawer, rot)
 
@@ -274,11 +274,19 @@ Player.update = function(self, map, map_draw3ds, map_size_x, map_size_y)
     local flag = false
     if input_vector.y ~= 0 then
         flag = true
-        self.drawer.position = self.drawer.position + sn.Vec3.new(0, input_vector.y * final_speed * sn.Time.delta(), 0)
+        self.drawer.position = self.drawer.position +
+                                   sn.Vec3
+                                       .new(
+                math.sin(math.rad(self.drawer.rotation.z)) * final_speed * sn.Time.delta() * input_vector.y,
+                math.cos(math.rad(self.drawer.rotation.z)) * final_speed * sn.Time.delta() * input_vector.y, 0)
     end
     if input_vector.x ~= 0 then
         flag = true
-        self.drawer.position = self.drawer.position + sn.Vec3.new(input_vector.x * final_speed * sn.Time.delta(), 0, 0)
+        self.drawer.position = self.drawer.position +
+                                   sn.Vec3
+                                       .new(
+                math.sin(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) * final_speed * sn.Time.delta(),
+                math.cos(math.rad(self.drawer.rotation.z + 90 * input_vector.x)) * final_speed * sn.Time.delta(), 0)
     end
 
     if flag then
@@ -296,26 +304,11 @@ Player.update = function(self, map, map_draw3ds, map_size_x, map_size_y)
         end
     end
     local pos = sn.Mouse.getPositionOnScene()
-    self.scopePos.x = pos.x
-    self.scopePos.y = pos.y
-    local r = 200
-    -- Make the coordinates fit in a circle of radius r
-    local x = self.scopePos.x
-    local y = self.scopePos.y
-    local d = self.scopePos:length()
-    -- if d > r then
-    --     local r_prime = r / d - 0.01
-    --     x = x * r_prime
-    --     y = y * r_prime
-    --     self.scopePos.x = x
-    --     self.scopePos.y = y
-    --     local newPos = sn.Vec2.new(x, y)
-    --     sn.Mouse.setPositionOnScene(newPos)
-    -- end
-    self.scopePos:normalize()
-    local drawer_scope_angle = math.atan(self.scopePos.y, self.scopePos.x)
-    self.rotationZ = math.deg(drawer_scope_angle)
-    self.drawer.rotation.z = self.rotationZ - 90
+    local camera2DHalf = sn.Graphics.getCamera2d():half()
+    self.drawer.rotation.y = self.drawer.rotation.y + math.sin(pos.y / camera2DHalf.y) * 32.0
+
+    self.drawer.rotation.z = self.drawer.rotation.z + math.sin(pos.x / camera2DHalf.x) * 32.0
+    sn.Mouse.setPositionOnScene(sn.Vec2.new(0.0, 0.0))
     local s_ratio = self.stamina / self.stamina_max
     self.stamina_drawer.scale.x = s_ratio * 300
     if s_ratio <= 0.2 then
@@ -326,7 +319,7 @@ Player.update = function(self, map, map_draw3ds, map_size_x, map_size_y)
 end
 ---@param self Player
 Player.draw3 = function(self)
-    sn.Graphics.draw3D(self.drawer)
+    -- sn.Graphics.draw3D(self.drawer)
     sn.Graphics.bindPipeline(sn.BuiltinPipelines.get3DInstanced())
     for i, v in ipairs(self.efks) do
         v:draw()
